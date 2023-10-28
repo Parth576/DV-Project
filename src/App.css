@@ -1,0 +1,22 @@
+.parent-container {
+  display: flex;
+}
+
+.container {
+  flex: 1;
+  height: 85vh;
+  margin: 5px;
+  border: 2px solid black;
+}
+
+.graph-heading {
+  flex: 1;
+  text-align: center;
+}
+
+#candidate-control {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+
