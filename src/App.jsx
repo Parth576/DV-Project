@@ -1,4 +1,7 @@
-// import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import './App.css'
+import Example from './components/Example';
+import { csvParse } from 'd3-dsv';
 import './App.css'
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -14,11 +17,21 @@ const darkTheme = createTheme({
 });
 
 
+
 function App() {
 
-  // const [count, setCount] = useState(1);
+  const [count, setCount] = useState(1);
+  const [templateData, setTemplateData] = useState(null);
+  const [filterObj, setFilterObj] = useState({
+    'startTime': null,
+    'endTime': null,
+    'eType': null,
+    'selectedNode':null
+  })
 
-  // let data = [{},{},{}];
+  useEffect(()=>{
+    csvParse('/data/processed/CGCS-Template-Processed-data')
+  },[]);
 
   return (
     <div>
