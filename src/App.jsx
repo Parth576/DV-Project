@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react'
-import './App.css'
-import Example from './components/Example';
 import { csvParse } from 'd3-dsv';
 import './App.css'
 import Box from '@mui/material/Box';
@@ -15,8 +13,6 @@ const darkTheme = createTheme({
     mode: 'dark',
   },
 });
-
-
 
 function App() {
 
