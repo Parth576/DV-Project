@@ -25,7 +25,6 @@ Custom edge types:
 
 function App() {
 
-  const [count, setCount] = useState(1);
   const [dataStore, setDataStore] = useState({
     'template': null,
     //'candidate1': null,
