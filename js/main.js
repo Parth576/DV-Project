@@ -66,10 +66,10 @@ async function parseGraphData(path){
     const startDate = new Date('2025-01-01T00:00:00');
     const newData = await d3.csv(path, (d)=> {
         return {
-            'source': d.Source,
-            'target': d.Target,
-            'eType': d.eType,
-            'weight': d.Weight,
+            'source': parseInt(d.Source),
+            'target': parseInt(d.Target),
+            'eType': parseInt(d.eType),
+            'weight': parseInt(d.Weight),
             'time': new Date(startDate.getTime() + (d.Time*1000)),
         }
     })
@@ -78,7 +78,7 @@ async function parseGraphData(path){
 
 async function parseTemplateNodes(path) {
     const newData = await d3.csv(path)
-    const nodeList = newData.map(d => parseInt(d.NodeID));
+    const nodeList = newData.map(d => ({ id: parseInt(d.NodeID) }));
     return nodeList;
 }
 
