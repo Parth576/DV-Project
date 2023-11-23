@@ -1,0 +1,53 @@
+body {
+    /*width:99%;
+        height:100%;*/
+    background: #111111;
+  }
+
+  .svg {
+    width: 1000;
+    height: 1000;
+  }
+
+  .link {
+    fill: none;
+  }
+
+  .labels {
+    fill: white;
+  }
+
+  #header {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    height: 40px;
+    width: 100%;
+    padding: 10px 0;
+    text-align: center;
+    font-size: 1.5em;
+    font-family: Helvetica;
+    color: white;
+  }
+
+  #chart {
+    position: fixed;
+    left: 0px;
+    top: 40px;
+    width: 100%;
+    text-align: right;
+  }
+
+  #footer {
+    background: #191919;
+    position: fixed;
+    left: 0px;
+    bottom: 0px;
+    height: 40px;
+    width: 100%;
+    padding: 20px 0;
+    text-align: right;
+    font-size: 0.75em;
+    font-family: Helvetica;
+    color: white;
+  }
