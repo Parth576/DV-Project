@@ -14,16 +14,99 @@ function drawNetworkChart() {
     const links = dataStore.template.map(d => ({...d}));
     const nodes = dataStore.templateNodes.map(d => ({...d}));
 
+    console.log(links)
+    console.log(nodes)
+
+    const nodeEdgesCount = {};
+    for (const linkId in links) {
+    const link = links[linkId];
+    nodeEdgesCount[link.source] = (nodeEdgesCount[link.source] || 0) + 1;
+    nodeEdgesCount[link.target] = (nodeEdgesCount[link.target] || 0) + 1;
+    console.log(nodeEdgesCount)
+
+
+    }
+
+    // Update nodes with the size property
+    for (const nodeId in nodes) {
+    const node = nodes[nodeId];
+    const edgesCount = nodeEdgesCount[node.id] || 0;
+    node.size = edgesCount;
+    }
+
+    console.log(nodes);
+
+    let maxSize = Number.MIN_SAFE_INTEGER;
+    let minSize = Number.MAX_SAFE_INTEGER;
+
+    // Iterate through nodes to find max and min size
+    for (const nodeId in nodes) {
+    const node = nodes[nodeId];
+    const size = node.size;
+
+    // Update max size if needed
+    if (size > maxSize) {
+        maxSize = size;
+    }
+
+    // Update min size if needed
+    if (size < minSize) {
+        minSize = size;
+    }
+    }
+
+    console.log('Maximum size:', maxSize);
+    console.log('Minimum size:', minSize);
+
+    const linkCount = {};
+    for (const linkId in links) {
+    const link = links[linkId];
+    const linkKey = `${Math.min(link.source, link.target)}-${Math.max(link.source, link.target)}`;
+    linkCount[linkKey] = (linkCount[linkKey] || 0) + 1;
+    }
+
+// Update links with the thickness property
+    for (const linkId in links) {
+    const link = links[linkId];
+    const linkKey = `${Math.min(link.source, link.target)}-${Math.max(link.source, link.target)}`;
+    link.thickness = linkCount[linkKey] || 0;
+    }
+
+    console.log(links);
+    
+    for(const id in links){
+        const link = links[id]
+        // if ((link.source == 34 && link.target == 41) || (link.target==34 && link.source == 41)){
+        //     console.log(link)
+        // }
+
+        if (link.source == 39 && link.target == 67){
+            console.log(link)
+        }
+
+    }
+
     // console.log(links);
     // console.log(nodes);
     // console.log('Nodes:', dataStore.templateNodes.map(d => d.id));
     // console.log('Link IDs:', links.map(d => d.source, d => d.target));
 
+    // node size : how many edges are there
+    // link thickness : vo dono nodes ke bichmei kitne links hai
+
+
     const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id))
-      .force("charge", d3.forceManyBody())
+      .force("link", d3.forceLink(links).id(d => d.id).strength(0.001))
+      .force("charge", d3.forceManyBody().strength(-10))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
+
+    // const simulation = d3.forceSimulation(nodes)
+    // .force("link", d3.forceLink(links).id(d => d.id))
+    // .force("charge", d3.forceManyBody())
+    // .force("x", d3.forceX())
+    // .force("y", d3.forceY())
+    // .on("tick", ticked);
 
       const svg = d3.select("#myNet svg")
       .attr("class", "everything")
@@ -32,37 +115,37 @@ function drawNetworkChart() {
       .attr("viewBox", [0, 0, width, height])
       .attr("style", "max-width: 100%; height: auto;");
 
-      var arrow = svg
-      .append("defs")
-      .selectAll("marker")
-      .data(["line-end"])
-      .join("marker")
-      .attr("id", "line-end")
-      .attr("viewBox", "0 -5 10 10")
-      .attr("refX", 0)
-      .attr("refY", 0)
-      .attr("markerUnits", "userSpaceOnUse")
-      .attr("markerWidth", 12)
-      .attr("markerHeight", 12)
-      .attr("orient", "auto")
-      .append("path")
-      .attr("d", "M0,-5L10,0L0,5")
-      .attr("fill", "#333");
+    //   var arrow = svg
+    //   .append("defs")
+    //   .selectAll("marker")
+    //   .data(["line-end"])
+    //   .join("marker")
+    //   .attr("id", "line-end")
+    //   .attr("viewBox", "0 -10 20 20")
+    //   .attr("refX", 19)
+    //   .attr("refY", 0)
+    //   .attr("markerUnits", "userSpaceOnUse")
+    //   .attr("markerWidth", 24)
+    //   .attr("markerHeight", 24)
+    //   .attr("orient", "auto")
+    //   .append("path")
+    //   .attr("d", "M0,-5L10,0L0,5")
+    //   .attr("fill", "#333");
 
       var linkSizeScale = d3
         .scaleLinear()
-        .domain(d3.extent(links, (d) => d.weight))
+        .domain(d3.extent(links, (d) => d.thickness))
         .range([5, 30]);
 
       // create node size scale
       var linkColourScale = d3
         .scaleLinear()
-        .domain(d3.extent(links, (d) => d.weight))
+        .domain(d3.extent(links, (d) => d.thickness))
         .range(["blue", "red"]);
 
         var nodeSizeScale = d3
         .scaleLinear()
-        .domain(d3.extent(nodes, (d) =>(d) => d.total))
+        .domain([0,192])
         .range([30, 70]);
 
         // Add a line for each link, and a circle for each node.
@@ -73,49 +156,98 @@ function drawNetworkChart() {
             .data(links)
             .join("line")
             .attr("class", "link")
-        .style("stroke", (d) => linkColourScale(d.weight))
+        .style("stroke", (d) => linkColourScale(d.thickness))
         .attr("stroke-opacity", 0.5)
-        .attr("stroke-width", (d) => linkSizeScale(d.weight))
+        .attr("stroke-width", (d) => linkSizeScale(d.thickness))
         .attr("marker-end", "url(#line-end)");
+
+        // const node = svg.append("g")
+        //     .attr("stroke", "#fff")
+        //     .attr("stroke-width", 1.5)
+        //     .selectAll()
+        //     .data(nodes)
+        //     .join("circle")
+        //     .attr("r", 10)
+        //     // .attr("r", (d) => nodeSizeScale(10))
+        //     .attr("fill", d => color(d.group));
+
+        // const nodeText = svg.append("g")
+        //     .selectAll()
+        //     .data(nodes)
+        //     .enter()
+        //     .append("text")
+        //     .attr("dx", 12) // Adjust the position of the text
+        //     .attr("dy", ".35em")
+        //     .text(d => d.id); // Display the node id
+
+
+  
+        // node.call(d3.drag()
+        //         .on("start", dragstarted)
+        //         .on("drag", dragged)
+        //         .on("end", dragended));
+
+
+        // function ticked() {
+        //     link
+        //         .attr("x1", d => d.source.x)
+        //         .attr("y1", d => d.source.y)
+        //         .attr("x2", d => d.target.x)
+        //         .attr("y2", d => d.target.y);
+
+        //     // link.attr("d", positionLink1);
+        //     // link.filter((d) => d.target !== d.source).attr("d", positionLink2);
+    
+
+
+
+        //     node
+        //         .attr("cx", d => d.x)
+        //         .attr("cy", d => d.y);
+
+        //         nodeText.attr("x", d => d.x)
+        //         .attr("y", d => d.y);
+        // }
 
         const node = svg.append("g")
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
             .selectAll()
             .data(nodes)
-            .join("circle")
-            .attr("r", 5)
-            // .attr("r", (d) => nodeSizeScale(10))
-            .attr("fill", d => color(d.group));
-
-        node.append("title")
-            .text(d => d.id);
-
-  
-        node.call(d3.drag()
+            .join("g")
+            .attr("class", "node-group")
+            .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
 
+        // Append circles to the node group
+        node.append("circle")
+            // .attr("r", 20)
+            .attr("r", (d) => { 
+                console.log(d.size)
+                return nodeSizeScale(d.size)
+                //return 20 
+            })
+            .attr("fill", d => color(d.group));
 
-        function ticked() {
-            link
+        // Append text inside each circle
+        node.append("text")
+            .attr("dy", ".35em")
+            .attr("text-anchor", "middle") 
+            .text(d => d.id); // Display the node id
+
+            function ticked() {
+
+                link
                 .attr("x1", d => d.source.x)
                 .attr("y1", d => d.source.y)
                 .attr("x2", d => d.target.x)
                 .attr("y2", d => d.target.y);
 
-            // link.attr("d", positionLink1);
-            // link.filter((d) => d.target !== d.source).attr("d", positionLink2);
-    
-
-
-
-            node
-                .attr("cx", d => d.x)
-                .attr("cy", d => d.y);
-        }
-
+                // Update group positions
+                node.attr("transform", d => `translate(${d.x},${d.y})`);
+            }            
        
 
         function positionLink1(d) {
@@ -165,7 +297,7 @@ function drawNetworkChart() {
 
     
 
-        return svg.node();
+      
 
 
 }
