@@ -1,4 +1,5 @@
 const startDate = new Date('2025-01-01T00:00:00');
+var data;
 
 async function convertData(path){
     const newData = await d3.csv(path, (d)=> {
@@ -10,10 +11,6 @@ async function convertData(path){
             'eType': d.eType,
             'weight': d.Weight,
             'time': new Date(startDate.getTime() + (d.Time*1000)),
-
-
-
-          
 
         }
     })
@@ -29,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
              console.log('loaded Data');
              data = values[0];
 
-             console.log(data)
+             
             
  
              // Hint: This is a good spot for doing data wrangling
@@ -42,4 +39,5 @@ document.addEventListener('DOMContentLoaded', function () {
  // Use this function to draw the network chart.
  function  drawNetworkChart() {
      console.log('trace:drawNetworkpChart()');
+     console.log(data)
  }
