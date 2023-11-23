@@ -4,5 +4,6 @@
 
 .main-view {
     text-align: center;
-    width: 1000vw;
+    width: 1800px;
+    max-width: 1800px !important;
 }
