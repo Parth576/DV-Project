@@ -1,6 +1,7 @@
 import drawBarChart from './bar-demographics.js';
 import drawNetworkChart from './network.js';
 import drawHeatmap from "./heatmap.js";
+import drawPieChart from './piechart.js';
 
 /*
 Custom edge types:
@@ -57,7 +58,7 @@ const appState = (function() {
             parseTemplateNodes(dataPaths.templateNodes),
             parseTemplateDemographics(dataPaths.templateDemographics)
         ])
-             .then(function (values) {
+            .then(function (values) {
                 dataStore.template = values[0];
                 dataStore.templateNodes = values[1];
                 dataStore.templateDemographics = values[2];
@@ -125,6 +126,7 @@ const appState = (function() {
         drawNetworkChart();
         drawBarChart();
         drawHeatmap();
+        drawPieChart();
     }
 
     return {
@@ -133,15 +135,15 @@ const appState = (function() {
     }
 })();
 
-async function parseGraphData(path){
+async function parseGraphData(path) {
     const startDate = new Date('2025-01-01T00:00:00');
-    const newData = await d3.csv(path, (d)=> {
+    const newData = await d3.csv(path, (d) => {
         return {
             'source': parseInt(d.Source),
             'target': parseInt(d.Target),
             'eType': parseInt(d.eType),
             'weight': parseInt(d.Weight),
-            'time': new Date(startDate.getTime() + (d.Time*1000)),
+            'time': new Date(startDate.getTime() + (d.Time * 1000)),
         }
     })
     return newData;
