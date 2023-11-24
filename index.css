@@ -8,6 +8,11 @@
     max-width: 95vw !important;
 }
 
+#demographics-svg {
+    width: 850px;
+    height: 50vh;
+}
+
 .image-button {
     width: 15px; /* Set a width for the button */
     height: 15px; /* Set a height for the button */
