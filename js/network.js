@@ -12,8 +12,8 @@ function drawNetworkChart() {
 
   
     const color = d3.scaleOrdinal(d3.schemeCategory10);
-    const links = dataStore.template.map(d => ({...d}));
-    const nodes = dataStore.templateNodes.map(d => ({...d}));
+    const links = dataStore.leftGraph.map(d => ({...d}));
+    const nodes = dataStore.leftNodes.map(nodeId => ({ id: nodeId }));
 
     let max_node = d3.max(nodes.map(d => d.id));
     let min_node = d3.min(nodes.map(d => d.id));
