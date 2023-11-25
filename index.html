@@ -6,10 +6,12 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="js/index.js"></script>
     <link rel="stylesheet" href="index.css">
     <link href="css/styles.css" rel="stylesheet" />
     <script type="module" src="js/network.js"></script>
     <script type="module" src="js/main.js"></script>
+
     <title>DV Project</title>
   </head>
   <body>
@@ -40,14 +42,30 @@
       <div class="row">
         <div class="col-6">
           <div class="card">
-            <div class="card-body" id="myNet">
-              <svg></svg>
+            <div class="card-body">
+              <div >
+                <button id="leftButton" class="image-button" onclick="lLeftBtn()"></button>
+                <span  id="lDisplayText" style="margin-left: 10px;margin-right:10px;">Template Ntwrk</span>
+                <button id="rightButton" class="image-button" onclick="lRightBtn()"></button>
+              </div>
+              <div id="myNet">
+                <svg></svg>
+              </div>
             </div>
           </div>
         </div>
         <div class="col-6">
           <div class="card">
-            <div class="card-body">Network</div>
+            <div class="card-body">
+              <div >
+                <button id="leftButton" class="image-button" onclick="rLeftBtn()"></button>
+                <span  id="rDisplayText" style="margin-left: 10px;margin-right:10px;">Candidate 1</span>
+                <button id="rightButton" class="image-button" onclick="rRightBtn()"></button>
+              </div>
+              <div id="myNet2">
+                <svg></svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
