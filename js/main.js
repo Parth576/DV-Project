@@ -13,7 +13,9 @@ const appState = (function() {
        'startTime': null,
         'endTime': null,
         'eType': null,
-        'selectedNode': null
+        'selectedNode': null,
+        'leftGraph': 'template',
+        'rightGraph': 'candidate1'
     }; 
     const dataStore = {
         'template': null,
@@ -24,6 +26,10 @@ const appState = (function() {
         'candidate4': null,
         'candidate5': null,
     };
+    const filteredData = {
+        'leftGraph': null,
+        'rightGraph': null
+    }
     const dataPaths = {
         'template': '../data/processed/CGCS-Template-Processed-data.csv',
         'templateNodes': '../data/processed/template-nodes.csv',
@@ -42,17 +48,36 @@ const appState = (function() {
              .then(function (values) {
                 dataStore.template = values[0];
                 dataStore.templateNodes = values[1];
-                applyFilters();
+                applyFilters(null);
              });
      });
 
     // Getter function for getting the current data object
     function getDataStore() {
-        return dataStore;
+        return filteredData;
     }
 
     // fn to apply filters and update all the graphs based on that, call getDataStore() to get updated data object
-    function applyFilters() {
+    function applyFilters(filterParams) {
+        if(!filterParams) {
+           filteredData.leftGraph = dataStore.template; 
+           filteredData.rightGraph = dataStore.template; 
+        } else  {
+            const newFilters = {
+                ...filters,
+                ...filterParams
+            }
+            filters = {...newFilters};
+            console.log(filters);
+            if (filters.hasOwnProperty('leftGraph')) {
+                filteredData.leftGraph = dataStore[filterParams['leftGraph']];
+            }
+            if (filters.hasOwnProperty('rightGraph')) {
+                filteredData.rightGraph = dataStore[filterParams['rightGraph']];
+            }
+            // apply filters based on current 'filters' object and set filtered data 
+            
+        }
         drawNetworkChart();
     }
 
