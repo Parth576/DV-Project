@@ -21,6 +21,7 @@ const appState = (function() {
     let dataStore = {
         'template': null,
         'templateNodes': null,
+        'templateDemographics': null,
         'candidate1': null,
         'candidate2': null,
         'candidate3': null,
@@ -36,6 +37,7 @@ const appState = (function() {
     let dataPaths = {
         'template': '../data/processed/CGCS-Template-Processed-data.csv',
         'templateNodes': '../data/processed/template-nodes.csv',
+        'templateDemographics': '../data/processed/demographics-template.csv',
         'candidate1': '',
         'candidate2': '',
         'candidate3': '',
@@ -46,11 +48,13 @@ const appState = (function() {
     document.addEventListener('DOMContentLoaded', function () {
         Promise.all([
             parseGraphData(dataPaths.template),
-            parseTemplateNodes(dataPaths.templateNodes)
+            parseTemplateNodes(dataPaths.templateNodes),
+            parseTemplateDemographics(dataPaths.templateDemographics)
         ])
              .then(function (values) {
                 dataStore.template = values[0];
                 dataStore.templateNodes = values[1];
+                dataStore.templateDemographics = values[2];
                 applyFilters(null);
              });
      });
@@ -144,6 +148,11 @@ async function parseTemplateNodes(path) {
     const newData = await d3.csv(path)
     const nodeList = newData.map(d => ({ id: parseInt(d.NodeID) }));
     return nodeList;
+}
+
+async function parseTemplateDemographics(path) {
+    const newData = await d3.csv(path)
+    return newData;
 }
 
 export default appState;
