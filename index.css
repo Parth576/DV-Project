@@ -7,3 +7,20 @@
     width: 95vw;
     max-width: 95vw !important;
 }
+
+.image-button {
+    width: 15px; /* Set a width for the button */
+    height: 15px; /* Set a height for the button */
+    background-color: white;
+    background-size: cover; /* Ensure the background image covers the button */
+    border: none; /* Remove border for a cleaner look */
+    cursor: pointer;
+}
+
+#leftButton {
+    background-image: url('img/left-arrow.png');
+}
+
+#rightButton {
+    background-image: url('img/right-arrow.png');
+}
