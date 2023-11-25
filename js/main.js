@@ -13,7 +13,8 @@ const appState = (function() {
        'startTime': null,
         'endTime': null,
         'eType': null,
-        'selectedNode': null,
+        'leftNode': null,
+        'rightNode': null,
         'leftGraph': 'template',
         'rightGraph': 'candidate1'
     }; 
