@@ -3,8 +3,8 @@ import appState from './main.js';
 function drawNetworkChart() {
     console.log('trace:drawNetworkpChart()');
     const dataStore = appState.getDataStore();
-    console.log(dataStore.template);
-    console.log(dataStore.templateNodes);
+    // console.log(dataStore.template);
+    // console.log(dataStore.templateNodes);
 
     const width = 928;
     const height = 600;
@@ -14,15 +14,15 @@ function drawNetworkChart() {
     const links = dataStore.template.map(d => ({...d}));
     const nodes = dataStore.templateNodes.map(d => ({...d}));
 
-    console.log(links)
-    console.log(nodes)
+    // console.log(links)
+    // console.log(nodes)
 
     const nodeEdgesCount = {};
     for (const linkId in links) {
     const link = links[linkId];
     nodeEdgesCount[link.source] = (nodeEdgesCount[link.source] || 0) + 1;
     nodeEdgesCount[link.target] = (nodeEdgesCount[link.target] || 0) + 1;
-    console.log(nodeEdgesCount)
+    // console.log(nodeEdgesCount)
 
 
     }
@@ -34,7 +34,7 @@ function drawNetworkChart() {
     node.size = edgesCount;
     }
 
-    console.log(nodes);
+    // console.log(nodes);
 
     let maxSize = Number.MIN_SAFE_INTEGER;
     let minSize = Number.MAX_SAFE_INTEGER;
@@ -55,15 +55,23 @@ function drawNetworkChart() {
     }
     }
 
-    console.log('Maximum size:', maxSize);
-    console.log('Minimum size:', minSize);
+    // console.log('Maximum size:', maxSize);
+    // console.log('Minimum size:', minSize);
 
+    let unique_links = [];
     const linkCount = {};
     for (const linkId in links) {
     const link = links[linkId];
     const linkKey = `${Math.min(link.source, link.target)}-${Math.max(link.source, link.target)}`;
     linkCount[linkKey] = (linkCount[linkKey] || 0) + 1;
+    if (!(unique_links.map(l => l.key).includes(linkKey))) {
+        link.key = linkKey;
+        unique_links.push(link);
     }
+    }
+    console.log(unique_links.map(link => link.key))
+    console.log('Unique links:', unique_links);
+    console.log("links:", links);
 
 // Update links with the thickness property
     for (const linkId in links) {
@@ -72,7 +80,7 @@ function drawNetworkChart() {
     link.thickness = linkCount[linkKey] || 0;
     }
 
-    console.log(links);
+    // console.log(links);
     
     for(const id in links){
         const link = links[id]
@@ -81,7 +89,7 @@ function drawNetworkChart() {
         // }
 
         if (link.source == 39 && link.target == 67){
-            console.log(link)
+            // console.log(link)
         }
 
     }
@@ -96,8 +104,8 @@ function drawNetworkChart() {
 
 
     const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(links).id(d => d.id).strength(0.001))
-      .force("charge", d3.forceManyBody().strength(-10))
+      .force("link", d3.forceLink(unique_links).id(d => d.id).strength(0.001))
+      .force("charge", d3.forceManyBody().strength(-20))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
@@ -135,7 +143,7 @@ function drawNetworkChart() {
       var linkSizeScale = d3
         .scaleLinear()
         .domain(d3.extent(links, (d) => d.thickness))
-        .range([5, 30]);
+        .range([5, 5]);
 
       // create node size scale
       var linkColourScale = d3
@@ -146,14 +154,14 @@ function drawNetworkChart() {
         var nodeSizeScale = d3
         .scaleLinear()
         .domain([0,192])
-        .range([30, 70]);
+        .range([20, 40]);
 
         // Add a line for each link, and a circle for each node.
         const link = svg.append("g")
             .attr("stroke", "#999")
             .attr("stroke-opacity", 0.6)
             .selectAll()
-            .data(links)
+            .data(unique_links)
             .join("line")
             .attr("class", "link")
         .style("stroke", (d) => linkColourScale(d.thickness))
