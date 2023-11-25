@@ -8,14 +8,27 @@ function drawNetworkChart() {
 
     const width = 928;
     const height = 600;
+    const margin = 10;
 
   
     const color = d3.scaleOrdinal(d3.schemeCategory10);
     const links = dataStore.template.map(d => ({...d}));
     const nodes = dataStore.templateNodes.map(d => ({...d}));
 
+    let max_node = d3.max(nodes.map(d => d.id));
+    let min_node = d3.min(nodes.map(d => d.id));
+    let range = max_node - min_node +1;
+    let grid_size = Math.ceil(Math.sqrt(range));
+
+
+    nodes.forEach(node => {
+        let norm = node.id-min_node;
+        node.pos_x = margin+((norm % grid_size)*(width-margin)/grid_size);
+        node.pos_y = margin+(Math.floor(norm / grid_size)*(height-margin)/grid_size);
+    })
+
     // console.log(links)
-    // console.log(nodes)
+    console.log(nodes)
 
     const nodeEdgesCount = {};
     for (const linkId in links) {
@@ -104,8 +117,10 @@ function drawNetworkChart() {
 
 
     const simulation = d3.forceSimulation(nodes)
-      .force("link", d3.forceLink(unique_links).id(d => d.id).strength(0.001))
+      .force("link", d3.forceLink(unique_links).id(d => d.id).strength(0.005))
       .force("charge", d3.forceManyBody().strength(-20))
+      .force("x", d3.forceX(d => d.pos_x).strength(0.05))
+      .force("y", d3.forceY(d => d.pos_y).strength(0.05))
       .force("center", d3.forceCenter(width / 2, height / 2))
       .on("tick", ticked);
 
