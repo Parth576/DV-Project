@@ -29,7 +29,9 @@ const appState = (function() {
     };
     let filteredData = {
         'leftGraph': null,
-        'rightGraph': null
+        'rightGraph': null,
+        'leftNodes': null,
+        'rightNodes': null
     }
     let dataPaths = {
         'template': '../data/processed/CGCS-Template-Processed-data.csv',
@@ -58,6 +60,15 @@ const appState = (function() {
         return filteredData;
     }
 
+    function getNodes(edgeList) {
+        let uniqueNodes = new Set();
+        edgeList.forEach((elem) => {
+            uniqueNodes.add(elem.source);
+            uniqueNodes.add(elem.target);
+        });
+        return Array.from(uniqueNodes);
+    }
+
     // fn to apply filters and update all the graphs based on that, call getDataStore() to get updated data object
     function applyFilters(filterParams) {
         if(!filterParams) {
@@ -77,8 +88,10 @@ const appState = (function() {
                 filteredData.rightGraph = dataStore[filterParams['rightGraph']];
             }
             // apply filters based on current 'filters' object and set filtered data 
-            
         }
+        filteredData.leftNodes = getNodes(filteredData.leftGraph);
+        console.log(filteredData.leftNodes);
+        filteredData.rightNodes = getNodes(filteredData.rightGraph);
         drawNetworkChart();
     }
 
