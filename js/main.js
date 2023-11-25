@@ -1,3 +1,4 @@
+import drawBarChart from './bar-demographics.js';
 import drawNetworkChart from './network.js';
 
 /*
@@ -122,6 +123,7 @@ const appState = (function() {
         // // console.log(filteredData.leftNodes);
         //filteredData.rightNodes = getNodes(filteredData.rightGraph);
         drawNetworkChart();
+        drawBarChart();
     }
 
     return {
