@@ -1,5 +1,10 @@
 import appState from './main.js';
 
+var nodeSizeScale = d3
+        .scaleLinear()
+        .domain([0,192])
+        .range([10, 30]);
+
 function drawNetworkChart() {
     
     const dataStore = appState.getDataStore();
@@ -114,10 +119,6 @@ function drawLeftNetwork(dataStore){
         .domain(d3.extent(links, (d) => d.thickness))
         .range(["blue", "red"]);
 
-        var nodeSizeScale = d3
-        .scaleLinear()
-        .domain([0,192])
-        .range([10, 30]);
 
         // Add a line for each link, and a circle for each node.
         const link = svg.append("g")
@@ -150,7 +151,9 @@ function drawLeftNetwork(dataStore){
                 return nodeSizeScale(d.size)
                 
             })
-            .attr("fill", d => color(d.group));
+            .attr("fill", d => color(d.group))
+            .on("mouseover", function(event,d) {displayDonut(d);})
+            .on("mouseout", function(d) {d3.selectAll(".donut").remove();});
 
             function ticked() {
 
@@ -375,6 +378,48 @@ function drawRightNetwork(dataStore){
 
 }
 
+
+
+function displayDonut(node) {
+    // Remove previous donut
+    d3.selectAll(".donut").remove();
+    
+    const radius = 10;
+
+    // append the svg object to the div called 'my_dataviz'
+    const svg = d3.select("#myNet svg")
+    .append("g")
+        .attr("transform", `translate(${node.x},${node.y})`);
+
+    // Create dummy data
+    const data = {a: 9, b: 20, c:30, d:8, e:12}
+
+    // set the color scale
+    const color = d3.scaleOrdinal()
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+
+    // Compute the position of each group on the pie:
+    const pie = d3.pie()
+    .value(d=>d[1])
+
+    const data_ready = pie(Object.entries(data))
+
+    // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
+    svg
+    .selectAll('.donut')
+    .data(data_ready)
+    .join('path')
+    .attr('class', 'donut')
+    .attr('fill', d => color(d.data[0]))
+    .attr("stroke", "black")
+    .style("stroke-width", "1px")
+    .style("opacity", 0.7)
+    .attr('d', d3.arc()
+        .transition().duration(500)
+        .innerRadius(nodeSizeScale(node.size))         // This is the size of the donut hole
+        .outerRadius(nodeSizeScale(node.size)+radius)
+    )
+}
 
 export default drawNetworkChart;
 
