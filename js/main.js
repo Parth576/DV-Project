@@ -9,7 +9,7 @@ Custom edge types:
 */
 
 const appState = (function() {
-    const filters = {
+    let filters = {
        'startTime': null,
         'endTime': null,
         'eType': null,
@@ -18,7 +18,7 @@ const appState = (function() {
         'leftGraph': 'template',
         'rightGraph': 'candidate1'
     }; 
-    const dataStore = {
+    let dataStore = {
         'template': null,
         'templateNodes': null,
         'candidate1': null,
@@ -27,11 +27,11 @@ const appState = (function() {
         'candidate4': null,
         'candidate5': null,
     };
-    const filteredData = {
+    let filteredData = {
         'leftGraph': null,
         'rightGraph': null
     }
-    const dataPaths = {
+    let dataPaths = {
         'template': '../data/processed/CGCS-Template-Processed-data.csv',
         'templateNodes': '../data/processed/template-nodes.csv',
         'candidate1': '',
