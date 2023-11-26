@@ -1,5 +1,14 @@
 import appState from './main.js';
 
+function vh(percent) {
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    return (percent * h) / 100;
+}
+  
+function vw(percent) {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    return (percent * w) / 100;
+}
 
 function drawPieChart() {
     // console.log('trace:drawPieChart()');
@@ -20,17 +29,17 @@ function drawPieChart() {
 
     const groupedData = d3.group(dataStore.leftGraph, d => d.eType);
 
-    const width = 270;
-    const height = 240;
-    const radius = Math.min(width, height) / 2.1;
-    const innerRadius = radius / 3;
+    const width = vh(20);
+    const height = vw(8);
+    const radius = Math.min(width, height) / 2.5;
+    const innerRadius = 0;
 
     const color = ['crimson', '#F98C40', '#FAD65A', '#0037A7', '#100064']
 
     const svg = d3.select("#pie_chart")
         .append("svg")
-        .attr("width", "100%")
-        .attr("height", "100%")
+        .attr("width", width)
+        .attr("height", height)
         .attr("viewBox", `0 0 ${width} ${height}`)
         .attr("preserveAspectRatio", "xMidYMid meet")
         .append("g")
@@ -68,7 +77,7 @@ function drawPieChart() {
 
 
     function handleMouseOver(event, d) {
-        d3.select(this).attr("stroke", "black").style("stroke-width", "5px");
+        d3.select(this).attr("stroke", "black").style("stroke-width", "3px");
         d3.select(this)
             .transition()
             .duration(200)
