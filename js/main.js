@@ -1,5 +1,6 @@
 import drawBarChart from './bar-demographics.js';
 import drawNetworkChart from './network.js';
+import drawHeatmap from "./heatmap.js";
 
 /*
 Custom edge types:
@@ -123,6 +124,7 @@ const appState = (function() {
         }
         drawNetworkChart();
         drawBarChart();
+        drawHeatmap();
     }
 
     return {
