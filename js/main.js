@@ -33,7 +33,11 @@ const appState = (function() {
         'leftGraph': null,
         'rightGraph': null,
         'leftNodes': null,
-        'rightNodes': null
+        'rightNodes': null,
+        'leftDemographics': null,
+        'rightDemographics': null,
+        'leftSelectedNode': null,
+        'rightSelectedNode': null,
     }
     let dataPaths = {
         'template': '../data/processed/CGCS-Template-Processed-data.csv',
@@ -56,6 +60,8 @@ const appState = (function() {
                 dataStore.template = values[0];
                 dataStore.templateNodes = values[1];
                 dataStore.templateDemographics = values[2];
+                filteredData.leftDemographics = dataStore.templateDemographics;
+                filteredData.rightDemographics = dataStore.templateDemographics;
                 applyFilters(null);
              });
      });
@@ -63,6 +69,10 @@ const appState = (function() {
     // Getter function for getting the current data object
     function getDataStore() {
         return filteredData;
+    }
+
+    function getOGDataStore() {
+        return dataStore;
     }
 
     function getNodes(edgeList) {
@@ -117,7 +127,9 @@ const appState = (function() {
             ...filteredData,
             //leftGraph: 
             leftNodes: getNodes(filteredData.leftGraph),
-            rightNodes:  getNodes(filteredData.rightGraph)
+            rightNodes:  getNodes(filteredData.rightGraph),
+            leftDemographics: dataStore.templateDemographics,
+            rightDemographics: dataStore.templateDemographics,
         }
         // filteredData.leftNodes = getNodes(filteredData.leftGraph);
         // // console.log(filteredData.leftNodes);

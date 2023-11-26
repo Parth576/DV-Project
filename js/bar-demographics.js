@@ -10,11 +10,57 @@ function vw(percent) {
     return (percent * w) / 100;
 }
 
-function drawBarChart(person1, person2) {
+function drawBarChart() {
     const dataStore = appState.getDataStore();
-    const data = dataStore.templateDemographics;
-    console.log("Data is");
-    console.log(data);
+    const left_node = dataStore.leftSelectedNode;
+    const right_node = dataStore.rightSelectedNode;
+    const leftDemographics = dataStore.leftDemographics;
+    const rightDemographics = dataStore.rightDemographics;
+    let left_data, right_data;
+    if (left_node == null) {
+        left_data = leftDemographics.reduce((acc, obj) => {
+            for (const key in obj) {
+              if (acc.hasOwnProperty(key) && key !='person') {
+                acc[key] += parseFloat(obj[key]);
+              } else {
+                acc[key] = parseFloat(obj[key]);
+              }
+            }
+            acc['person'] = 'aggregate';
+            return acc;
+          }, {});
+        for (const key in left_data) {
+            if (key !='person') {
+                left_data[key] /= leftDemographics.length;
+            }
+        }
+    }
+    else {
+        left_data = leftDemographics.find(obj => obj.person === left_node);
+    }
+    if (right_node == null) {
+        right_data = rightDemographics.reduce((acc, obj) => {
+            for (const key in obj) {
+              if (acc.hasOwnProperty(key) && key !='person') {
+                acc[key] += parseFloat(obj[key]);
+              } else {
+                acc[key] = parseFloat(obj[key]);
+              }
+            }
+            acc['person'] = 'aggregate';
+            return acc;
+          }, {});
+        for (const key in right_data) {
+            if (key !='person') {
+                right_data[key] /= rightDemographics.length;
+            }
+        }
+    }
+    else {
+        right_data = rightDemographics.find(obj => obj.person === right_node);
+    }
+    console.log(left_data);
+    console.log(right_data);
 
     const width = vw(43.5);
     const height = vh(60);
@@ -25,23 +71,23 @@ function drawBarChart(person1, person2) {
     var numericValues = [];
 
 
-    for (var key in data[0]) {
+    for (var key in left_data) {
         if (key !== 'person') {
 
-            numericValues.push(parseInt(data[0][key]));
+            numericValues.push(parseInt(left_data[key]));
         }
     }
-    for (var key in data[1]) {
+    for (var key in right_data) {
         if (key !== 'person') {
 
-            numericValues.push(parseInt(data[1][key]));
+            numericValues.push(parseInt(right_data[key]));
         }
     }
     console.log(numericValues);
     // Find minimum and maximum values
     var minValue = Math.min(...numericValues);
     var maxValue = Math.max(...numericValues);
-    var demographicKeys = Object.keys(data[0]).filter(key => key !== 'person');
+    var demographicKeys = Object.keys(left_data).filter(key => key !== 'person');
     console.log(demographicKeys);
     const svg = d3.select("#demographics-svg")
         .attr("width", width)
@@ -51,6 +97,7 @@ function drawBarChart(person1, person2) {
     const x = d3.scaleLinear()
     .range([ wlmargin, width-wrmargin ])
     .domain([minValue, 1.1*maxValue])
+    console.log(x(1000));
     svg.append("g")
     .attr("transform", `translate(0, ${height-hmargin})`)
     .call(d3.axisBottom(x))
@@ -60,7 +107,7 @@ function drawBarChart(person1, person2) {
 
     const y = d3.scaleBand()
     .domain(demographicKeys)
-    .range([ height-hmargin, 0])
+    .range([ height-hmargin, hmargin])
     .padding(0.2);
     svg.append("g")
     .attr("transform", `translate(${wlmargin}, 0)`)
@@ -74,9 +121,9 @@ function drawBarChart(person1, person2) {
     .data(demographicKeys)
     .join("rect")
         .attr("class","bar1")
-        .attr("x", x(1))
-        .attr("y", d => y(d)-10)
-        .attr("width", d => x(data[0][d]))
+        .attr("x", x(minValue))
+        .attr("y", d => y(d)-10+10)
+        .attr("width", d => x(left_data[d]))
         .attr("height", d => y.bandwidth()-20)
         .attr("fill", "#69b3a2");
     
@@ -84,9 +131,9 @@ function drawBarChart(person1, person2) {
     .data(demographicKeys)
     .join("rect")
         .attr("class","bar2")
-        .attr("x", x(1))
-        .attr("y", d => y(d)+10)
-        .attr("width", d => x(data[1][d]))
+        .attr("x", x(minValue))
+        .attr("y", d => y(d)+10+10)
+        .attr("width", d => x(right_data[d]))
         .attr("height", d => y.bandwidth()-20)
         .attr("fill", "#78bf00")
 
