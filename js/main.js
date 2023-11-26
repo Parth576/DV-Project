@@ -2,6 +2,7 @@ import drawBarChart from './bar-demographics.js';
 import drawNetworkChart from './network.js';
 import drawHeatmap from "./heatmap.js";
 import drawPieChart from './piechart.js';
+import drawLeftStreamgraph from './streamgraph.js'
 
 /*
 Custom edge types:
@@ -207,6 +208,7 @@ const appState = (function() {
         drawBarChart();
         drawHeatmap();
         drawPieChart();
+        drawLeftStreamgraph();
     }
 
     return {
