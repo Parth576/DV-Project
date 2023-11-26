@@ -4,13 +4,13 @@ import appState from './main.js';
 function drawPieChart() {
     // console.log('trace:drawPieChart()');
     const dataStore = appState.getDataStore();
-    // console.log(dataStore.template);
+    console.log(dataStore.leftGraph);
     // console.log(dataStore.templateNodes);
 
     var node_dict = { 0: 'Email', 1: 'Phone', 2: 'Buy/Sell', 3: 'Travel' };
 
 
-    const eTypeCount = dataStore.template.reduce((countMap, item) => {
+    const eTypeCount = dataStore.leftGraph.reduce((countMap, item) => {
         const eType = item.eType;
         countMap[eType] = (countMap[eType] || 0) + 1;
         return countMap;
@@ -18,7 +18,7 @@ function drawPieChart() {
 
     console.log(eTypeCount);
 
-    const groupedData = d3.group(dataStore.template, d => d.eType);
+    const groupedData = d3.group(dataStore.leftGraph, d => d.eType);
 
     const width = 270;
     const height = 240;
