@@ -1,4 +1,4 @@
-// import appState from './main.js';
+import appState from './main.js';
 // appState.applyFilters({ 'leftGraph': 'candidate2' })
 // appState.applyFilters({ 'leftGraph':'template', 'rightGraph': 'candidate' })
 
@@ -51,3 +51,8 @@ function rRightBtn() {
     updateRightDisplayText();
     console.log("Right Right button clicked");
 }
+
+window.lLeftBtn = lLeftBtn;
+window.lRightBtn = lRightBtn;
+window.rLeftBtn = rLeftBtn;
+window.rRightBtn = rRightBtn;
