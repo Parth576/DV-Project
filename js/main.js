@@ -61,6 +61,7 @@ const appState = (function() {
     }
 
     function getNodes(edgeList) {
+        console.log(edgeList);
         let uniqueNodes = new Set();
         edgeList.forEach((elem) => {
             uniqueNodes.add(elem.source);
@@ -71,27 +72,51 @@ const appState = (function() {
 
     // fn to apply filters and update all the graphs based on that, call getDataStore() to get updated data object
     function applyFilters(filterParams) {
+
+        //console.log(filterParams)
         if(!filterParams) {
-           filteredData.leftGraph = dataStore.template; 
-           filteredData.rightGraph = dataStore.template; 
+            filteredData = {
+                ...filteredData,
+                leftGraph: dataStore.template,
+                rightGraph: dataStore.template
+            };
+        //    filteredData.leftGraph = dataStore.template; 
+        //    filteredData.rightGraph = dataStore.template; 
         } else  {
             const newFilters = {
                 ...filters,
                 ...filterParams
             }
             filters = {...newFilters};
-            console.log(filters);
-            if (filters.hasOwnProperty('leftGraph')) {
-                filteredData.leftGraph = dataStore[filterParams['leftGraph']];
+            //console.log(filters);
+            if (filterParams.hasOwnProperty('leftGraph')) {
+                //filteredData.leftGraph = dataStore[filterParams['leftGraph']];
+                filteredData = {
+                    ...filteredData,
+                    leftGraph: dataStore[filterParams['leftGraph']]
+                };
             }
-            if (filters.hasOwnProperty('rightGraph')) {
-                filteredData.rightGraph = dataStore[filterParams['rightGraph']];
+            if (filterParams.hasOwnProperty('rightGraph')) {
+                // console.log(filteredData)
+                //filteredData.rightGraph = dataStore[filterParams['rightGraph']];
+                filteredData = {
+                    ...filteredData,
+                    rightGraph: dataStore[filterParams['rightGraph']]
+                };
+                // console.log(filteredData)
             }
             // apply filters based on current 'filters' object and set filtered data 
         }
-        filteredData.leftNodes = getNodes(filteredData.leftGraph);
-        console.log(filteredData.leftNodes);
-        filteredData.rightNodes = getNodes(filteredData.rightGraph);
+        console.log(filteredData)
+        filteredData = {
+            ...filteredData,
+            //leftGraph: 
+            leftNodes: getNodes(filteredData.leftGraph),
+            rightNodes:  getNodes(filteredData.rightGraph)
+        }
+        // filteredData.leftNodes = getNodes(filteredData.leftGraph);
+        // // console.log(filteredData.leftNodes);
+        //filteredData.rightNodes = getNodes(filteredData.rightGraph);
         drawNetworkChart();
     }
 

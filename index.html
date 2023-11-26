@@ -15,12 +15,34 @@
     <title>DV Project</title>
   </head>
   <body>
-    <h2 class="page-heading">Find the culprits</h2>
+    <div class="container">
+      <div class="row d-flex justify-content-center align-items-center">
+        <div class="col d-flex justify-content-center align-items-center">
+          <div class="form-check form-switch" style="display: flex; align-items: center;">
+            <label  class="form-check-label" for="flexSwitchCheckChecked" id="leftSwitchStream">Stream Graph</label>
+            <input style="order: 2; margin-left: 10px; margin-right: 10px;" class="form-check-input" type="checkbox" role="switch" id="switchLeft">
+            <label style="order: 3;"  class="form-check-label" for="flexSwitchCheckChecked" id="leftSwitchHeat">Heat Graph</label>
+          </div>
+        </div>
+        <div class="col">
+          <h2 class="page-heading">Find the culprits</h2>
+        </div>
+        <div class="col d-flex justify-content-center align-items-center">
+          <div class="form-check form-switch" style="display: flex; align-items: center;">
+          
+            <label  class="form-check-label" for="flexSwitchCheckChecked" id="leftSwitchStream">Stream Graph</label>
+            <input style="order: 2; margin-left: 10px; margin-right: 10px;" class="form-check-input" type="checkbox" role="switch" id="switchRight" checked>
+            <label style="order: 3;"  class="form-check-label" for="flexSwitchCheckChecked" id="leftSwitchHeat">Heat Graph</label>
+          </div>
+        </div>
+      </div>
+    </div>
+   
     <div class="container-lg main-view">
       <div class="row">
         <div class="col-4">
           <div class="card">
-            <div class="card-body">Stream</div>
+            <div class="card-body" id="leftStream">Stream Graph</div>
           </div>
         </div>
         <div class="col-2">
@@ -35,7 +57,7 @@
         </div>
         <div class="col-4">
           <div class="card">
-            <div class="card-body">Stream</div>
+            <div class="card-body" id="rightStream">Heat Map</div>
           </div>
         </div>
       </div>
@@ -59,7 +81,7 @@
             <div class="card-body">
               <div >
                 <button id="leftButton" class="image-button" onclick="rLeftBtn()"></button>
-                <span  id="rDisplayText" style="margin-left: 10px;margin-right:10px;">Candidate 1</span>
+                <span  id="rDisplayText" style="margin-left: 10px;margin-right:10px;">Template Ntwrk</span>
                 <button id="rightButton" class="image-button" onclick="rRightBtn()"></button>
               </div>
               <div id="myNet2">
