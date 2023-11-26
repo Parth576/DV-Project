@@ -66,7 +66,8 @@ function drawBarChart() {
     const height = vh(60);
     const wlmargin = vw(4.5);
     const wrmargin = vw(0);
-    const hmargin = vh(5);
+    const htmargin = vh(3);
+    const hbmargin = vh(7);
 
     var numericValues = [];
 
@@ -99,15 +100,22 @@ function drawBarChart() {
     .domain([minValue, 1.1*maxValue])
     console.log(x(1000));
     svg.append("g")
-    .attr("transform", `translate(0, ${height-hmargin})`)
+    .attr("transform", `translate(0, ${height-hbmargin})`)
     .call(d3.axisBottom(x))
     .selectAll("text")
         .attr("transform", "translate(-10,0)rotate(-15)")
         .style("text-anchor", "end");
 
+    svg.append("text")
+        .attr("id", "x-label")
+        .attr("text-anchor", "end")
+        .attr("x", wlmargin+width/2)
+        .attr("y", height-htmargin/1.5)
+        .text("Amount (in $)");
+
     const y = d3.scaleBand()
     .domain(demographicKeys)
-    .range([ height-hmargin, hmargin])
+    .range([ height-hbmargin, htmargin])
     .padding(0.2);
     svg.append("g")
     .attr("transform", `translate(${wlmargin}, 0)`)
