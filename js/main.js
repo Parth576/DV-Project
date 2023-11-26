@@ -113,6 +113,7 @@ const appState = (function() {
             }
             // apply filters based on current 'filters' object and set filtered data 
         }
+        // console.log(filteredData)
         filteredData = {
             ...filteredData,
             leftNodes: getNodes(filteredData.leftGraph),
