@@ -11,15 +11,17 @@ function vw(percent) {
 }
 
 function drawPieChart() {
-    // console.log('trace:drawPieChart()');
     const dataStore = appState.getDataStore();
-    console.log(dataStore.leftGraph);
-    // console.log(dataStore.templateNodes);
+    drawPie(dataStore.leftGraph, "#pie_chart1");
+    drawPie(dataStore.rightGraph, "#pie_chart2");
+}
+
+function drawPie(graph_data, svg_name) {
 
     var node_dict = { 0: 'Email', 1: 'Phone', 2: 'Buy/Sell', 3: 'Travel' };
 
 
-    const eTypeCount = dataStore.leftGraph.reduce((countMap, item) => {
+    const eTypeCount = graph_data.reduce((countMap, item) => {
         const eType = item.eType;
         countMap[eType] = (countMap[eType] || 0) + 1;
         return countMap;
@@ -27,7 +29,7 @@ function drawPieChart() {
 
     console.log(eTypeCount);
 
-    const groupedData = d3.group(dataStore.leftGraph, d => d.eType);
+    const groupedData = d3.group(graph_data, d => d.eType);
 
     const width = vh(20);
     const height = vw(8);
@@ -36,7 +38,7 @@ function drawPieChart() {
 
     const color = ['crimson', '#F98C40', '#FAD65A', '#0037A7', '#100064']
 
-    const svg = d3.select("#pie_chart")
+    const svg = d3.select(svg_name)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
