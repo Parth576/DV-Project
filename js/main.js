@@ -176,15 +176,17 @@ const appState = (function() {
                     }
                     
                 } else {
-                    if (filterType === 'eType') {
-                        filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
-                        filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
-                    } else if (filterType === 'startTime') {
-                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time>=filterParams[filterType])];
-                        filteredRightData = [...filteredRightData.filter((d)=>d.time>=filterParams[filterType])];
-                    } else {
-                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time<=filterParams[filterType])];
-                        filteredRightData = [...filteredRightData.filter((d)=>d.time<=filterParams[filterType])];
+                    if (filters[filterType] !== null) {
+                        if (filterType === 'eType') {
+                            filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
+                            filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
+                        } else if (filterType === 'startTime') {
+                            filteredLeftData = [...filteredLeftData.filter((d)=>d.time>=filterParams[filterType])];
+                            filteredRightData = [...filteredRightData.filter((d)=>d.time>=filterParams[filterType])];
+                        } else {
+                            filteredLeftData = [...filteredLeftData.filter((d)=>d.time<=filterParams[filterType])];
+                            filteredRightData = [...filteredRightData.filter((d)=>d.time<=filterParams[filterType])];
+                        }
                     }
                 }
             });
