@@ -12,7 +12,7 @@ function vw(percent) {
 
 const margin = {top: vh(2), right: vw(2), bottom: vh(3), left: vw(2)};
 const width = vw(30) - margin.left - margin.right;
-const height = vh(20) - margin.top - margin.bottom;
+const height = vh(25) - margin.top - margin.bottom;
 
 
 
@@ -50,6 +50,14 @@ function getWeekData(dayData, weeks) {
     
 }
 
+// function drawStreamgraphs() {
+//   const dataStore = appState.getDataStore();
+//   const filters = appState.getFilters();
+
+//   drawSingleStreamgraph('Left', dataStore[filters.leftGraph]);
+//   drawSingleStreamgraph('Right', dataStore[filters.rightGraph])
+// }
+
 function drawLeftStreamgraph() { 
    const dataStore = appState.getDataStore();
     const data = dataStore.leftGraph;
@@ -57,7 +65,6 @@ function drawLeftStreamgraph() {
     const keys = d3.union(data.map(d => d.eType));
 
     const weeks = d3.union(data.map(d=>getISOWeekNumber(d.time)));
-    console.log(weeks);
     const weekData = getWeekData(data, Array.from(weeks).slice().sort((a, b) => a - b));
 
     const svg = d3.select("#streamgraphLeft")
@@ -102,7 +109,6 @@ function drawLeftStreamgraph() {
        .keys(keys)
        (weekData)
 
-    console.log(stackedData);
 
       const Tooltip = svg
         .append("text")
