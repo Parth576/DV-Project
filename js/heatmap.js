@@ -15,8 +15,8 @@ const widthWithMargin = vw(30), heightWithMargin = vh(25), margin = {top: vh(2),
     width = widthWithMargin - margin.left - margin.right,
     height = heightWithMargin - margin.top - margin.bottom;
 
-function drawGraph() {
-    const svg = d3.select("#rightHeatmap")
+function drawGraph(filteredData, div_name) {
+    const svg = d3.select(div_name)
         .append("svg")
         .attr("width", widthWithMargin)
         .attr("height", heightWithMargin)
@@ -24,18 +24,15 @@ function drawGraph() {
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-    const dataStore = appState.getDataStore();
-    // TODO: change datastore
-    const filteredData = dataStore.leftGraph;
 
     const myGroups = Array.from(new Set(filteredData.map(d => getISOWeekNumber(d['time']))))
     const myVars = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     const heatmapData = computeHeatmapData(filteredData, myVars);
-    drawHeatmapInSvg(svg, myGroups, myVars, heatmapData);
+    drawHeatmapInSvg(svg, myGroups, myVars, heatmapData, div_name);
 }
 
-function drawHeatmapInSvg(svg, myGroups, myVars, data) {
+function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -62,7 +59,7 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data) {
         .range(["white", "#69b3a2"])
         .domain([1, d3.max(data, (d) => d.value)])
 
-    const tooltip = d3.select("#rightHeatmap")
+    const tooltip = d3.select(div_name)
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -137,7 +134,9 @@ function computeHeatmapData(data, myVars) {
 }
 
 function drawHeatmap() {
-    drawGraph();
+    const dataStore = appState.getDataStore();
+    drawGraph(dataStore.rightGraph, "#rightHeatmap");
+    drawGraph(dataStore.leftGraph, "#leftHeatmap");
 }
 
 export default drawHeatmap;
