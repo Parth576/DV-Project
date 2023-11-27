@@ -9,12 +9,12 @@ function drawNetworkChart() {
     
     const dataStore = appState.getDataStore();
     
-    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg" );
-    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg" );
+    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics);
+    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics);
  
 }
 
-function drawNetwork(network_nodes, network_links, svg_name){
+function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
     const width = 928;
     const height = 600;
     const margin = 10;
@@ -152,9 +152,12 @@ function drawNetwork(network_nodes, network_links, svg_name){
                 
             })
             .attr("fill", d => color(d.group))
-            .on("mouseover", function(event,d) {displayDonut(d, svg_name);})
+            .on("mouseover", function(event,d) {displayDonut(d, svg_name, getDemographics(d));})
             .on("mouseout", function(d) {d3.selectAll(".donut").remove();});
 
+            function getDemographics(d) {
+                return demographicData.find(obj => obj.person == d.id) || null
+            }
             function ticked() {
 
                 link
@@ -199,30 +202,47 @@ function drawNetwork(network_nodes, network_links, svg_name){
 
 
 
-function displayDonut(node, svg_name) {
+function displayDonut(node, svg_name, demographics) {
     // Remove previous donut
     d3.selectAll(".donut").remove();
-    
-    const radius = 10;
+    if (demographics == null) {
+        return;
+    }
+
+    let data = {
+        "Essential": 0,
+        "Leisure": 0,
+        "Income": 0,
+        "Other": 0
+      };
+
+    for (const expense in demographics) {
+        if (["Household", "Living", "Healthcare", "Education"].includes(expense)) {
+            data["Essential"] += parseFloat(demographics[expense]);
+        } else if (["Personal", "Leisure", "Substances", "Donations"].includes(expense)) {
+            data["Leisure"] += parseFloat(demographics[expense]);
+        } else if (["Income"].includes(expense)) {
+            data["Income"] += parseFloat(demographics[expense]);
+        } else {
+            data["Other"] += parseFloat(demographics[expense]);
+        }
+      }
+    const radius = 20;
 
     // append the svg object to the div called 'my_dataviz'
     const svg = d3.select(svg_name)
     .append("g")
         .attr("transform", `translate(${node.x},${node.y})`);
 
-    // Create dummy data
-    const data = {a: 9, b: 20, c:30, d:8, e:12}
-
     // set the color scale
     const color = d3.scaleOrdinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56"])
+    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"])
 
     // Compute the position of each group on the pie:
     const pie = d3.pie()
     .value(d=>d[1])
 
     const data_ready = pie(Object.entries(data))
-
     // Build the pie chart: Basically, each part of the pie is a path that we build using the arc function.
     svg
     .selectAll('.donut')
@@ -232,7 +252,7 @@ function displayDonut(node, svg_name) {
     .attr('fill', d => color(d.data[0]))
     .attr("stroke", "black")
     .style("stroke-width", "1px")
-    .style("opacity", 0.7)
+    .style("opacity", 1)
     .attr('d', d3.arc()
         // .transition().duration(500)
         .innerRadius(nodeSizeScale(node.size))         // This is the size of the donut hole
