@@ -11,9 +11,13 @@ function vw(percent) {
 }
 
 function drawPieChart() {
-    const dataStore = appState.getDataStore();
-    drawPie(dataStore.leftGraph, "#pie_chart1");
-    drawPie(dataStore.rightGraph, "#pie_chart2");
+    // const dataStore = appState.getDataStore();
+    // drawPie(dataStore.leftGraph, "#pie_chart1");
+    // drawPie(dataStore.rightGraph, "#pie_chart2");
+    const ogData = appState.getOriginalData();
+    const filters = appState.getFilters();
+    drawPie(ogData[filters.leftGraph], "#pie_chart1");
+    drawPie(ogData[filters.rightGraph], "#pie_chart2");
 }
 
 function drawPie(graph_data, svg_name) {
@@ -75,6 +79,10 @@ function drawPie(graph_data, svg_name) {
 
     function handleClick(event, d) {
         console.log("Clicked on slice with data:", d.data);
+        const eType = d.data[0];
+        appState.applyFilters({
+            'eType': eType,
+        })
     }
 
 
