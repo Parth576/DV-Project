@@ -59,8 +59,6 @@ function drawBarChart() {
     else {
         right_data = rightDemographics.find(obj => obj.person === right_node);
     }
-    console.log(left_data);
-    console.log(right_data);
 
     const width = vw(43.5);
     const height = vh(60);
@@ -84,12 +82,10 @@ function drawBarChart() {
             numericValues.push(parseInt(right_data[key]));
         }
     }
-    console.log(numericValues);
     // Find minimum and maximum values
     var minValue = Math.min(...numericValues);
     var maxValue = Math.max(...numericValues);
     var demographicKeys = Object.keys(left_data).filter(key => key !== 'person');
-    console.log(demographicKeys);
     const svg = d3.select("#demographics-svg")
         .attr("width", width)
         .attr("height", height)
@@ -98,7 +94,6 @@ function drawBarChart() {
     const x = d3.scaleLinear()
     .range([ wlmargin, width-wrmargin ])
     .domain([minValue, 1.1*maxValue])
-    console.log(x(1000));
     svg.append("g")
     .attr("transform", `translate(0, ${height-hbmargin})`)
     .call(d3.axisBottom(x))
