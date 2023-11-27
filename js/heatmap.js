@@ -19,20 +19,27 @@ function drawGraph() {
     const filteredData = dataStore.leftGraph;
 
     const myGroups = Array.from(new Set(filteredData.map(d => getISOWeekNumber(d['time']))))
-    const myVars = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+    const myVars = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     const heatmapData = computeHeatmapData(filteredData, myVars);
     drawHeatmapInSvg(svg, myGroups, myVars, heatmapData);
 }
 
 function drawHeatmapInSvg(svg, myGroups, myVars, data) {
+    const months = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
     const x = d3.scaleBand()
         .range([0, width])
         .domain(myGroups)
         .padding(0.01);
+
+
+    const xAxis = d3.scaleBand().range([0, width]).domain(months);
     svg.append("g")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(xAxis))
 
     const y = d3.scaleBand()
         .range([height, 0])
