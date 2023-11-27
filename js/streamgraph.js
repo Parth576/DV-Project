@@ -14,27 +14,12 @@ const margin = {top: vh(2), right: vw(2), bottom: vh(3), left: vw(2)};
 const width = vw(30) - margin.left - margin.right;
 const height = vh(20) - margin.top - margin.bottom;
 
-const svg = d3.select("#streamgraphLeft")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",`translate(${margin.left}, ${margin.top})`);
+
 
 function getISOWeekNumber(date) {
-  // Create a new date object to avoid modifying the original date
-  const newDate = new Date(date);
-  
-  // Set to Monday of the week to ensure the correct week number
-  newDate.setHours(0, 0, 0, 0);
-  newDate.setDate(newDate.getDate() + 4 - (newDate.getDay() || 7));
-  
-  // Get the year of the date
-  const yearStart = new Date(newDate.getFullYear(), 0, 1);
-  
-  // Calculate the week number
-  const weekNumber = Math.ceil((((newDate - yearStart) / 86400000) + 1) / 7);
-  
-  return weekNumber;
+  const startDate = new Date('2025-01-01T00:00:00');
+  var days = Math.floor((date - startDate) / (24 * 60 * 60 * 1000));
+  return Math.ceil(days / 7);
 }
 
 function getWeekData(dayData, weeks) {
@@ -72,9 +57,19 @@ function drawLeftStreamgraph() {
     const keys = d3.union(data.map(d => d.eType));
 
     const weeks = d3.union(data.map(d=>getISOWeekNumber(d.time)));
-    const weekData = getWeekData(data, Array.from(weeks));
+    console.log(weeks);
+    const weekData = getWeekData(data, Array.from(weeks).slice().sort((a, b) => a - b));
 
-      // Add X axis
+    const svg = d3.select("#streamgraphLeft")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",`translate(${margin.left}, ${margin.top})`);
+
+    
+
+      
+
       const x = d3.scaleLinear()
         .domain(d3.extent(weekData, function(d) { return d.weekNum; }))
         .range([ 0, width ]);
@@ -83,50 +78,32 @@ function drawLeftStreamgraph() {
         .attr("transform", `translate(0, ${height})`)
         .call(d3.axisBottom(x))
         
-      // Customization
       svg.selectAll(".tick line").attr("stroke", "#b8b8b8")
 
-      // Add X axis label:
-      //svg.append("text")
+      // svg.append("text")
       //    .attr("text-anchor", "end")
       //    .attr("x", width)
       //    .attr("y", height-30 )
-      //    .text("Time (year)");
+      //    .text("Week number");
 
-      // Add Y axis
       const y = d3.scaleLinear()
-        .domain(d3.extent(weekData, function(d) { 
-          return d[0]+d[1]+d[2]+d[3]
-        }))
+        .domain([0, d3.max(weekData, d => d[0] + d[1] + d[2] + d[3])])
         .range([ height, 0 ]);
+        
       svg.append('g')
         .call(d3.axisLeft(y))
 
-      // color palette
       const color = d3.scaleOrdinal()
         .domain(d3.union(data.map(d => d.eType)))
         .range(d3.schemeDark2);
 
-      //stack the data?
-      //const stackedData = d3.stack()
-      //  .offset(d3.stackOffsetSilhouette)
-      //  .keys(keys)
-      //  (data)
+      const stackedData = d3.stack()
+      .order(d3.stackOrderAppearance)
+       .keys(keys)
+       (weekData)
 
-    const stackedData = d3.stack()
-      .keys(keys) // apples, bananas, cherries, …
-      .value(([, group], key) => group.get(key))
-    (d3.index(weekData, d => d.week, d => d.fruit));
+    console.log(stackedData);
 
-    // const stackedData = d3.stack()
-    //     .keys(keys)
-    //     .value(([, group], key) => {
-    //       console.log(`Group: ${group}, key: ${key}`);
-    //     })
-    //     (weekData);
-
-
-      //create a tooltip
       const Tooltip = svg
         .append("text")
         .attr("x", 0)
@@ -134,7 +111,6 @@ function drawLeftStreamgraph() {
         .style("opacity", 0)
         .style("font-size", 17)
 
-      //Three function that change the tooltip when user hover / move / leave a cell
       const mouseover = function(event,d) {
         Tooltip.style("opacity", 1)
         d3.selectAll(".myArea").style("opacity", .2)
@@ -153,6 +129,7 @@ function drawLeftStreamgraph() {
 
       // Area generator
       const area = d3.area()
+      .curve(d3.curveCardinal)
         .x(function(d) { 
           return x(d.data.weekNum); 
         })
@@ -161,16 +138,76 @@ function drawLeftStreamgraph() {
 
       // Show the areas
       svg
-        .selectAll(".myArea")
+        .selectAll(".myLayers")
         .data(stackedData)
         .join("path")
           .attr("class", "myArea")
           .style("fill", function(d) { return color(d.key); })
           .attr("d", area)
-          .attr("transform",`translate(${margin.left}, ${margin.top})`)
+          // .attr("transform",`translate(${margin.left}, ${margin.top})`)
           .on("mouseover", mouseover)
           .on("mousemove", mousemove)
           .on("mouseleave", mouseleave)
+
+
+      // START TIME FILTERS
+
+          let startLineX = 100; 
+        let endLineX = 200;
+
+        const startLine = svg.append("line")
+          .attr("class", "slider-line")
+          .attr("x1", startLineX) 
+          .attr("y1", 0)
+          .attr("x2", startLineX)
+          .attr("y2", height);
+
+        const endLine = svg.append("line")
+          .attr("class", "slider-line")
+          .attr("x1", endLineX)  
+          .attr("y1", 0)
+          .attr("x2", endLineX)
+          .attr("y2", height);
+
+          let startLineDragging = false;
+          let endLineDragging = false;
+    
+       const startlineDrag = d3.drag()
+          .on("start", (event) => {
+            startLineDragging = true;
+            event.sourceEvent.stopPropagation();
+          })
+          .on("drag", (event) => {
+            if (startLineDragging) {
+              const mouseX = event.x;
+              startLineX = mouseX;
+              startLine.attr("x1", mouseX).attr("x2", mouseX);
+            }
+          })
+          .on("end", () => {
+            startLineDragging = false;
+            // Get x axis value for starting line => x.invert(startLineX)
+          });
+    
+          const endLineDrag = d3.drag()
+          .on("start", (event) => {
+            endLineDragging = true;
+            event.sourceEvent.stopPropagation();
+          })
+          .on("drag", (event) => {
+            if (endLineDragging) {
+              const mouseX = event.x;
+              endLineX = mouseX;
+              endLine.attr("x1", mouseX).attr("x2", mouseX);
+            }
+          })
+          .on("end", () => {
+            endLineDragging = false;
+            // Get x axis value for ending line => x.invert(endLineX)
+          });
+    
+        startLine.call(startlineDrag);
+        endLine.call(endLineDrag);
 }
 
 export default drawLeftStreamgraph;
