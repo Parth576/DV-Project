@@ -4,7 +4,7 @@ function vh(percent) {
     var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
     return (percent * h) / 100;
 }
-  
+
 function vw(percent) {
     var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
     return (percent * w) / 100;
@@ -93,8 +93,9 @@ function drawPieChart() {
             .style("opacity", .9);
 
         div.html("EType: " + node_dict[d.data[0]] + "<br/>" + "Count: " + eTypeCount[d.data[0]])
-            .style("left", (event.pageX) + "px")
-            .style("top", (event.pageY - 28) + "px");
+            .style("left", (event.pageX + 45) + "px")
+            .style("top", (event.pageY - 38) + "px")
+            .style("font-size", "13px");
     }
 
     function handleMouseOut(event, d) {
