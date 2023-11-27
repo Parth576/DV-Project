@@ -128,8 +128,8 @@ function drawBarChart() {
         .attr("y", d => y(d)-10+10)
         .attr("width", d => x(left_data[d]))
         .attr("height", d => y.bandwidth()-20)
-        .attr("fill", "#69b3a2");
-    
+        .attr("fill", "#704F4F");
+ 
     svg.selectAll(".bar2")
     .data(demographicKeys)
     .join("rect")
@@ -138,7 +138,7 @@ function drawBarChart() {
         .attr("y", d => y(d)+10+10)
         .attr("width", d => x(right_data[d]))
         .attr("height", d => y.bandwidth()-20)
-        .attr("fill", "#78bf00")
+        .attr("fill","#F1A661")
 
 }
 

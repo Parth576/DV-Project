@@ -20,7 +20,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
     const margin = 10;
 
   
-    const color = d3.scaleOrdinal(d3.schemeCategory10);
+   
     const links = network_links.map(d => ({...d}));
     const nodes = network_nodes.map(nodeId => ({ id: nodeId }));
 
@@ -114,10 +114,12 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
         .range([5, 20]);
 
       // create node size scale
-      var linkColourScale = d3
+     
+    
+        var linkOpacityScale = d3
         .scaleLinear()
         .domain(d3.extent(links, (d) => d.thickness))
-        .range(["blue", "red"]);
+        .range([0.2, 0.8]);
 
 
         // Add a line for each link, and a circle for each node.
@@ -128,8 +130,8 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
             .data(unique_links)
             .join("line")
             .attr("class", "link")
-        .style("stroke", (d) => linkColourScale(d.thickness))
-        .attr("stroke-opacity", 0.5)
+        .style("stroke", "#3876BF")
+        .attr("stroke-opacity", (d) => linkOpacityScale(d.thickness))
         .attr("stroke-width", (d) => linkSizeScale(d.thickness))
         .attr("marker-end", "url(#line-end)");
 
@@ -151,7 +153,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
                 return nodeSizeScale(d.size)
                 
             })
-            .attr("fill", d => color(d.group))
+            .attr("fill", d => "#272829")
             .on("mouseover", function(event,d) {displayDonut(d, svg_name, getDemographics(d));})
             .on("mouseout", function(d) {d3.selectAll(".donut").remove();});
 
@@ -236,7 +238,7 @@ function displayDonut(node, svg_name, demographics) {
 
     // set the color scale
     const color = d3.scaleOrdinal()
-    .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b"])
+    .range(["#7fc97f","#beaed4","#fdc086","#ffff99"])
 
     // Compute the position of each group on the pie:
     const pie = d3.pie()

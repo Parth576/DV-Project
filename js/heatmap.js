@@ -56,7 +56,7 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name) {
         .call(d3.axisLeft(y));
 
     const myColor = d3.scaleLinear()
-        .range(["white", "#69b3a2"])
+        .range(["#b8d3f2", "#01428f"])
         .domain([1, d3.max(data, (d) => d.value)])
 
     const tooltip = d3.select(div_name)
