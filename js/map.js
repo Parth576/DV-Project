@@ -66,7 +66,7 @@ function drawMapChart() {
         .attr("fill", d => {
             const country = d.properties.name;
             const countryData = data.find(item => countryIntMap[item.targetLocation] === country);
-            return countryData ? "#800080" : '#c0c1c2'; // Grey for countries not in the data
+            return countryData ? "#3876BF" : '#c0c1c2'; // Grey for countries not in the data
         })
         .style("opacity", d => {
             const country = d.properties.name;

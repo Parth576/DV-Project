@@ -42,7 +42,7 @@ function drawPie(graph_data, svg_name) {
     const radius = Math.min(width, height) / 2.5;
     const innerRadius = 0;
 
-    const color = ['crimson', '#F98C40', '#FAD65A', '#0037A7', '#100064']
+    const color = ["#1b9e77","#d95f02","#7570b3","#e7298a"]
 
     let svg;
     let div;
@@ -80,7 +80,9 @@ function drawPie(graph_data, svg_name) {
         .join("path")
         .attr("class", "pie")
         .attr("d", arc)
-        .attr("fill", (d, i) => color[i])
+        .attr("fill", (d, i) =>{
+            console.log(d)
+            return color[d.index]} )
         .style("opacity", 0.7)
         .attr("stroke", "black")
         .style("stroke-width", "2px")
