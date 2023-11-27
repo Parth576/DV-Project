@@ -31,7 +31,7 @@ function drawPie(graph_data, svg_name) {
         return countMap;
     }, {});
 
-    console.log(eTypeCount);
+    //console.log(eTypeCount);
 
     const groupedData = d3.group(graph_data, d => d.eType);
 
