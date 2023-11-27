@@ -52,6 +52,36 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data) {
         .range(["white", "#69b3a2"])
         .domain([1, d3.max(data, (d) => d.value)])
 
+    const tooltip = d3.select("#rightHeatmap")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px")
+
+    const mouseover = function () {
+        tooltip
+            .style("opacity", 1)
+        d3.select(this)
+            .style("stroke", "black")
+            .style("opacity", 1)
+    }
+    const mousemove = function (event, d) {
+        tooltip
+            .html(d.date.toDateString())
+            .style("left", (event.x) / 2 + "px")
+            .style("top", (event.y) / 2 + "px")
+    }
+    const mouseleave = function () {
+        tooltip
+            .style("opacity", 0)
+        d3.select(this)
+            .style("stroke", "none")
+            .style("opacity", 0.8)
+    }
 
     svg.selectAll()
         .data(data, function (d) {
@@ -69,6 +99,17 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data) {
         .style("fill", function (d) {
             return myColor(d.value)
         })
+        .attr("rx", 4)
+        .attr("ry", 4)
+        .style("stroke-width", 4)
+        .style("stroke", "none")
+        .style("opacity", 0.8)
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave)
+        .on("click", (e, d) => {
+            console.log(e, d)
+        })
 }
 
 function computeHeatmapData(data, myVars) {
@@ -79,7 +120,7 @@ function computeHeatmapData(data, myVars) {
         if (dateCountMap.has(dateKey)) {
             dateCountMap.get(dateKey).value += 1;
         } else {
-            dateCountMap.set(dateKey, {group: getISOWeekNumber(date), variable: myVars[date.getDay()], value: 1});
+            dateCountMap.set(dateKey, {group: getISOWeekNumber(date), variable: myVars[date.getDay()], value: 1, date});
         }
     });
     return Array.from(dateCountMap.values());
