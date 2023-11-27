@@ -227,12 +227,18 @@ const appState = (function() {
 async function parseGraphData(path) {
     const startDate = new Date('2025-01-01T00:00:00');
     const newData = await d3.csv(path, (d) => {
+        console.log(d)
         return {
             'source': parseInt(d.Source),
             'target': parseInt(d.Target),
             'eType': parseInt(d.eType),
             'weight': parseInt(d.Weight),
             'time': new Date(startDate.getTime() + (d.Time * 1000)),
+            'targetLoc': parseInt(d.TargetLocation),
+            'sourceLatitude': parseFloat(d.SourceLatitude),
+            'sourceLongitude':parseFloat(d.SourceLongitude) ,
+            'targetLatitude':parseFloat(d.TargetLatitude),
+            'targetLongitude':parseFloat(d.TargetLongitude),
         }
     })
     return newData;

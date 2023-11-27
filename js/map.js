@@ -13,7 +13,17 @@ function vw(percent) {
 function drawMapChart() {
 
     const dataStore = appState.getDataStore();
-    console.log(dataStore)
+    // console.log(dataStore)
+    
+
+    var leftMapData=dataStore.leftGraph;
+    var rightMapData=dataStore.rightGraph;
+
+
+    var filteredLeft = leftMapData.filter(data => data.eType === 3);
+    var filteredRight = rightMapData.filter(data => data.eType === 3);
+    console.log(filteredLeft)
+    console.log(filteredRight)
 
     const svg = d3.select("#myMap svg");
     const width = vw(43.5);
@@ -47,6 +57,12 @@ function drawMapChart() {
             4: 'China',
             5: 'Canada',
         };
+
+        const leftData = [
+            { lat: 28.7, long: 56.9 },
+            { lat: 25.7, long: 96.9 },
+            { lat: 18.7, long: 6.9 }
+        ];
 
 
     const opacityScale = d3.scaleLinear()
@@ -90,6 +106,16 @@ function drawMapChart() {
             // Hide tooltip on mouseout
             tooltip.style("opacity", 0);
         });
+
+        svg.append("g")
+        .selectAll("circle")
+        .data(leftData)
+        .enter()
+        .append("circle")
+        .attr("cx", d => projection([d.long, d.lat])[0]) // Use the projection to convert lat/long to x/y
+        .attr("cy", d => projection([d.long, d.lat])[1])
+        .attr("r", 5) // Adjust the radius as needed
+        .attr("fill", "red");
 
             
 
