@@ -81,7 +81,7 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data) {
     }
     const mousemove = function (event, d) {
         tooltip
-            .html(d.date.toDateString())
+            .html(d.date.toDateString()+ " | Established Point-of-Contacts: "+d.value)
             .style("left", (event.x) / 2 + "px")
             .style("top", (event.y) / 2 + "px")
     }
