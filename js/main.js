@@ -24,7 +24,7 @@ const appState = (function() {
     let dataStore = {
         'template': null,
         'templateNodes': null,
-        'templateDemographics': null,
+        'template-demographics': null,
         'candidate1': null,
         'candidate2': null,
         'candidate3': null,
@@ -35,6 +35,11 @@ const appState = (function() {
         'candidate3-map': null,
         'candidate4-map': null,
         'candidate5-map': null,
+        'candidate1-demographics': null,
+        'candidate2-demographics': null,
+        'candidate3-demographics': null,
+        'candidate4-demographics': null,
+        'candidate5-demographics': null,
     };
     let filteredData = {
         'leftGraph': null,
@@ -49,7 +54,7 @@ const appState = (function() {
     let dataPaths = {
         'template': '../data/processed/CGCS-Template-Processed-data.csv',
         'templateNodes': '../data/processed/template-nodes.csv',
-        'templateDemographics': '../data/processed/demographics-template.csv',
+        'template-demographics': '../data/processed/demographics-template.csv',
         'candidate1': '../data/processed/candidate1-processed.csv',
         'candidate3': '../data/processed/candidate2-processed.csv',
         'candidate2': '../data/processed/candidate3-processed.csv',
@@ -60,13 +65,18 @@ const appState = (function() {
         'candidate3-map': '../data/processed/candidate1-map.csv',
         'candidate4-map': '../data/processed/candidate1-map.csv',
         'candidate5-map': '../data/processed/candidate1-map.csv',
+        'candidate1-demographics': '../data/processed/demographics-candidate1.csv',
+        'candidate2-demographics': '../data/processed/demographics-candidate2.csv',
+        'candidate3-demographics': '../data/processed/demographics-candidate3.csv',
+        'candidate4-demographics': '../data/processed/demographics-candidate4.csv',
+        'candidate5-demographics': '../data/processed/demographics-candidate5.csv',
     };
 
     document.addEventListener('DOMContentLoaded', function () {
         Promise.all([
             parseGraphData(dataPaths.template),
             parseTemplateNodes(dataPaths.templateNodes),
-            parseTemplateDemographics(dataPaths.templateDemographics),
+            parseTemplateDemographics(dataPaths['template-demographics']),
             parseGraphData(dataPaths.candidate1),
             parseGraphData(dataPaths.candidate2),
             parseGraphData(dataPaths.candidate3),
@@ -77,6 +87,11 @@ const appState = (function() {
             parseMapData(dataPaths['candidate3-map']),
             parseMapData(dataPaths['candidate4-map']),
             parseMapData(dataPaths['candidate5-map']),
+            parseTemplateDemographics(dataPaths['candidate1-demographics']),
+            parseTemplateDemographics(dataPaths['candidate2-demographics']),
+            parseTemplateDemographics(dataPaths['candidate3-demographics']),
+            parseTemplateDemographics(dataPaths['candidate4-demographics']),
+            parseTemplateDemographics(dataPaths['candidate5-demographics']),
         ])
              .then(function (values) {
                 Object.keys(dataStore).forEach((fileName, index) => {
@@ -110,14 +125,17 @@ const appState = (function() {
 
     // fn to apply filters and update all the graphs based on that, call getDataStore() to get updated data object
     function applyFilters(filterParams) {
-        let prevLeftData = [...filteredData.leftGraph];
-        let prevRightData = [...filteredData.rightGraph];
+        let prevLeftData;
+        let prevRightData;
+        
         if(!filterParams) {
             // default state
             filteredData = {
                 ...filteredData,
                 leftGraph: dataStore.template,
-                rightGraph: dataStore.candidate1
+                leftDemographics: dataStore['template-demographics'],
+                rightGraph: dataStore.candidate1,
+                rightDemographics: dataStore['candidate5-demographics'],
             };
         } else  {
             const newFilters = {
@@ -128,15 +146,22 @@ const appState = (function() {
             if (filterParams.hasOwnProperty('leftGraph')) {
                 filteredData = {
                     ...filteredData,
-                    leftGraph: dataStore[filterParams['leftGraph']]
+                    leftGraph: dataStore[filterParams['leftGraph']],
+                    leftDemographics: dataStore[`${filterParams['leftGraph']}-demographics`]
                 };
             }
             if (filterParams.hasOwnProperty('rightGraph')) {
                 filteredData = {
                     ...filteredData,
-                    rightGraph: dataStore[filterParams['rightGraph']]
+                    rightGraph: dataStore[filterParams['rightGraph']],
+                    rightDemographics: dataStore[`${filterParams['rightGraph']}-demographics`]
                 };
             }
+
+            if (filteredData.leftGraph && filteredData.rightGraph) {
+                prevLeftData = [...filteredData.leftGraph];
+                prevRightData = [...filteredData.rightGraph];
+            } 
 
             // apply filters based on current 'filters' object and set filtered data
             if (filterParams.hasOwnProperty('startTime')) {
@@ -152,16 +177,18 @@ const appState = (function() {
                 prevRightData = [...prevRightData.filter((d)=>d.eType===filterParams.eType)];
             }
 
+            filteredData = {
+                ...filteredData,
+                leftGraph: prevLeftData,
+                rightGraph: prevRightData
+            };
         }
         filteredData = {
             ...filteredData,
-            leftGraph: prevLeftData,
-            rightGraph: prevRightData,
             leftNodes: getNodes(filteredData.leftGraph),
             rightNodes:  getNodes(filteredData.rightGraph),
-            leftDemographics: dataStore.templateDemographics,
-            rightDemographics: dataStore.templateDemographics,
         }
+        console.log(filteredData);
         drawNetworkChart();
         drawBarChart();
         drawHeatmap();
@@ -173,7 +200,6 @@ const appState = (function() {
         applyFilters: applyFilters,
         getOriginalData: getOGDataStore,
         getFilters: getFilters
-
     }
 })();
 
