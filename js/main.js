@@ -125,8 +125,8 @@ const appState = (function() {
 
     // fn to apply filters and update all the graphs based on that, call getDataStore() to get updated data object
     function applyFilters(filterParams) {
-        let prevLeftData;
-        let prevRightData;
+        let filteredLeftData;
+        let filteredRightData;
         
         if(!filterParams) {
             // default state
@@ -158,29 +158,38 @@ const appState = (function() {
                 };
             }
 
-            if (filteredData.leftGraph && filteredData.rightGraph) {
-                prevLeftData = [...filteredData.leftGraph];
-                prevRightData = [...filteredData.rightGraph];
-            } 
+            filteredLeftData = [...dataStore[filters.leftGraph]];
+            filteredRightData = [...dataStore[filters.rightGraph]];
 
             // apply filters based on current 'filters' object and set filtered data
-            if (filterParams.hasOwnProperty('startTime')) {
-                prevLeftData = [...prevLeftData.filter((d)=>d.startTime===filterParams.startTime)];
-                prevRightData = [...prevRightData.filter((d)=>d.startTime===filterParams.startTime)];
-            }
-            if (filterParams.hasOwnProperty('endTime')) {
-                prevLeftData = [...prevLeftData.filter((d)=>d.endTime===filterParams.endTime)];
-                prevRightData = [...prevRightData.filter((d)=>d.endTime===filterParams.endTime)];
-            }
-            if (filterParams.hasOwnProperty('eType')) {
-                prevLeftData = [...prevLeftData.filter((d)=>d.eType===filterParams.eType)];
-                prevRightData = [...prevRightData.filter((d)=>d.eType===filterParams.eType)];
-            }
+            ['startTime', 'endTime', 'eType'].forEach((filterType) => {
+                if(filterParams.hasOwnProperty(filterType)) {
+                    filteredLeftData = [...filteredLeftData.filter((d)=>d[filterType]===filterParams[filterType])];
+                    filteredRightData = [...filteredRightData.filter((d)=>d[filterType]===filterParams[filterType])];
+                } else {
+                    if (filters[filterType] !== null) {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d[filterType]===filters[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d[filterType]===filters[filterType])];
+                    };
+                }
+            });
+            // if (filterParams.hasOwnProperty('startTime')) {
+            //     prevLeftData = [...prevLeftData.filter((d)=>d.startTime===filterParams.startTime)];
+            //     prevRightData = [...prevRightData.filter((d)=>d.startTime===filterParams.startTime)];
+            // }
+            // if (filterParams.hasOwnProperty('endTime')) {
+            //     prevLeftData = [...prevLeftData.filter((d)=>d.endTime===filterParams.endTime)];
+            //     prevRightData = [...prevRightData.filter((d)=>d.endTime===filterParams.endTime)];
+            // }
+            // if (filterParams.hasOwnProperty('eType')) {
+            //     prevLeftData = [...prevLeftData.filter((d)=>d.eType===filterParams.eType)];
+            //     prevRightData = [...prevRightData.filter((d)=>d.eType===filterParams.eType)];
+            // }
 
             filteredData = {
                 ...filteredData,
-                leftGraph: prevLeftData,
-                rightGraph: prevRightData
+                leftGraph: filteredLeftData,
+                rightGraph: filteredRightData
             };
         }
         filteredData = {
