@@ -81,9 +81,14 @@ function drawLeftStreamgraph() {
         .domain(d3.extent(weekData, function(d) { return d.weekNum; }))
         .range([ 0, width ]);
 
+      const months = [
+          'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      ];
+      const xAxis = d3.scaleBand().range([0, width]).domain(months);
       svg.append("g")
         .attr("transform", `translate(0, ${height})`)
-        .call(d3.axisBottom(x))
+        .call(d3.axisBottom(xAxis))
         
       svg.selectAll(".tick line").attr("stroke", "#b8b8b8")
 
