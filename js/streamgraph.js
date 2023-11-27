@@ -108,6 +108,18 @@ function drawEachStreamgraph(data, svg_name) {
       svg.append('g')
         .call(d3.axisLeft(y))
 
+      svg.append("text")
+        .attr("class", "y-label")
+        .attr("text-anchor", "end")
+        .attr("x", -20)
+        .attr("y", -25)
+        .attr("transform", "rotate(-90)")
+        // .attr("transform", `translate(-10, 0)`)
+        // .attr("x", height / 3)
+        // .attr("y", 0)
+        // .attr("dy", ".75em")
+        .text("Number of contacts");
+
       const color = d3.scaleOrdinal()
         .domain(d3.union(data.map(d => d.eType)))
         .range(d3.schemeDark2);
