@@ -158,8 +158,8 @@ function drawLeftStreamgraph() {
 
       // START TIME FILTERS
 
-          let startLineX = 100; 
-        let endLineX = 200;
+          let startLineX = 0; 
+        let endLineX = width;
 
         const startLine = svg.append("line")
           .attr("class", "slider-line")
@@ -175,6 +175,14 @@ function drawLeftStreamgraph() {
           .attr("x2", endLineX)
           .attr("y2", height);
 
+        const select_rect = svg.append("rect")
+          .attr("class", "select-rect")
+          .attr("x", startLineX)
+          .attr("y", 0)
+          .attr("width", width)
+          .attr("height", height)
+          .attr("opacity", 0.2)
+
           let startLineDragging = false;
           let endLineDragging = false;
     
@@ -188,6 +196,20 @@ function drawLeftStreamgraph() {
               const mouseX = event.x;
               startLineX = mouseX;
               startLine.attr("x1", mouseX).attr("x2", mouseX);
+              select_rect.attr("x", mouseX);
+              select_rect.attr("width", endLineX-startLineX);
+            }
+            if (startLineX<0) {
+              startLineX = 0;
+              startLine.attr("x1", startLineX).attr("x2", startLineX);
+              select_rect.attr("x", startLineX);
+              select_rect.attr("width", endLineX-startLineX);
+            }
+            if (startLineX>=endLineX-5) {
+              startLineX = endLineX-5;
+              startLine.attr("x1", startLineX).attr("x2", startLineX);
+              select_rect.attr("x", startLineX);
+              select_rect.attr("width", endLineX-startLineX);
             }
           })
           .on("end", () => {
@@ -205,6 +227,18 @@ function drawLeftStreamgraph() {
               const mouseX = event.x;
               endLineX = mouseX;
               endLine.attr("x1", mouseX).attr("x2", mouseX);
+              // select_rect.attr("x", mouseX);
+              select_rect.attr("width", endLineX-startLineX);
+            }
+            if (endLineX>width) {
+              endLineX = width;
+              endLine.attr("x1", endLineX).attr("x2", endLineX);
+              select_rect.attr("width", endLineX-startLineX);
+            }
+            if (endLineX<=startLineX+5) {
+              endLineX = startLineX+5;
+              endLine.attr("x1", endLineX).attr("x2", endLineX);
+              select_rect.attr("width", endLineX-startLineX);
             }
           })
           .on("end", () => {
