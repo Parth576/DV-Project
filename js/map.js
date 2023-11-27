@@ -12,6 +12,9 @@ function vw(percent) {
 
 function drawMapChart() {
 
+    const dataStore = appState.getDataStore();
+    console.log(dataStore)
+
     const svg = d3.select("#myMap svg");
     const width = vw(43.5);
     const height = vh(50);
@@ -25,14 +28,25 @@ function drawMapChart() {
         .scale(width / 1.45 / Math.PI)
         .translate([width / 2, height / 2]);
 
-    const data = [
-        { targetLocation: 5.0, count: 30, country: 'USA' }, // US
-        { targetLocation: 0.0, count: 30, country: 'Canada' }, // Canada
-        { targetLocation: 4.0, count: 25, country: 'Brazil' }, // Brazil
-        { targetLocation: 1.0, count: 10, country: 'Cuba' }, // Cuba
-        { targetLocation: 3.0, count: 10, country: 'China' }, // China
-        { targetLocation: 2.0, count: 5, country: 'Italy' }   // Italy
-    ];
+       
+
+        const data = [
+            { targetLocation: 5, count: 30 },
+            { targetLocation: 0, count: 30 },
+            { targetLocation: 4, count: 25 },
+            { targetLocation: 1, count: 10 },
+            { targetLocation: 3, count: 10 },
+            { targetLocation: 2, count: 5 }
+        ];
+        
+        const countryIntMap = {
+            0: 'USA',
+            1: 'Italy',
+            2: 'Brazil',
+            3: 'Cuba',
+            4: 'China',
+            5: 'Canada',
+        };
 
 
     const opacityScale = d3.scaleLinear()
@@ -46,37 +60,36 @@ function drawMapChart() {
 
         // Draw the map
         svg.append("g")
-            .selectAll("path")
-            .data(worldData.features)
-            .join("path")
-            .attr("fill", d => {
-                const country = d.properties.name;
-                const countryData = data.find(item => item.country === country);
-                return countryData ? "#800080" : '#c0c1c2'; // Grey for countries not in the data
-            })
-            .style("opacity", d => {
-                const country = d.properties.name;
-                const countryData = data.find(item => item.country === country);
-                return countryData ? opacityScale(countryData.count) : 0.3; // Set default opacity for countries not in the data
-            })
-            .attr("d", d3.geoPath().projection(projection))
-            .style("stroke", "#fff")
-            .on("mouseover", function (event, d) {
-                const country = d.properties.name;
-                const countryData = data.find(item => item.country === country);
-                if (countryData) {
-                    // Show tooltip with count
-                    tooltip.style("opacity", 1)
+        .selectAll("path")
+        .data(worldData.features)
+        .join("path")
+        .attr("fill", d => {
+            const country = d.properties.name;
+            const countryData = data.find(item => countryIntMap[item.targetLocation] === country);
+            return countryData ? "#800080" : '#c0c1c2'; // Grey for countries not in the data
+        })
+        .style("opacity", d => {
+            const country = d.properties.name;
+            const countryData = data.find(item => countryIntMap[item.targetLocation] === country);
+            return countryData ? opacityScale(countryData.count) : 0.3; // Set default opacity for countries not in the data
+        })
+        .attr("d", d3.geoPath().projection(projection))
+        .style("stroke", "#fff")
+        .on("mouseover", function (event, d) {
+            const country = d.properties.name;
+            const countryData = data.find(item => countryIntMap[item.targetLocation] === country);
+            if (countryData) {
+                // Show tooltip with count
+                tooltip.style("opacity", 1)
                     .html(`${country}: ${countryData.count}`)
-                    .style('left', vw(event.pageX) )
-                    .style('top', vh(event.pageY));// Adjust the positioning
-        
-                }
-            })
-            .on("mouseout", function () {
-                // Hide tooltip on mouseout
-                tooltip.style("opacity", 0);
-            });
+                    .style('left', vw(event.pageX))
+                    .style('top', vh(event.pageY)); // Adjust the positioning
+            }
+        })
+        .on("mouseout", function () {
+            // Hide tooltip on mouseout
+            tooltip.style("opacity", 0);
+        });
 
             
 
