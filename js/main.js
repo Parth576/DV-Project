@@ -3,6 +3,8 @@ import drawNetworkChart from './network.js';
 import drawHeatmap from "./heatmap.js";
 import drawPieChart from './piechart.js';
 import drawLeftStreamgraph from './streamgraph.js'
+import drawMapChart from './map.js';
+
 
 /*
 Custom edge types:
@@ -206,6 +208,7 @@ const appState = (function() {
         
         drawNetworkChart();
         drawBarChart();
+        drawMapChart();
         drawHeatmap();
         if (calling_chart != "pie") {
             drawPieChart();
