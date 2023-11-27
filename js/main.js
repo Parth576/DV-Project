@@ -2,6 +2,7 @@ import drawBarChart from './bar-demographics.js';
 import drawNetworkChart from './network.js';
 import drawHeatmap from "./heatmap.js";
 import drawPieChart from './piechart.js';
+import drawMapChart from './map.js';
 
 /*
 Custom edge types:
@@ -207,6 +208,7 @@ const appState = (function() {
         drawBarChart();
         drawHeatmap();
         drawPieChart();
+        drawMapChart();
     }
 
     return {
@@ -226,6 +228,10 @@ async function parseGraphData(path) {
             'eType': parseInt(d.eType),
             'weight': parseInt(d.Weight),
             'time': new Date(startDate.getTime() + (d.Time * 1000)),
+            'sourceLatitude': parseFloat(d.SourceLatitude),
+            'sourceLongitude':parseFloat(d.SourceLongitude) ,
+            'targetLatitude':parseFloat(d.TargetLatitude),
+            'targetLongitude':parseFloat(d.TargetLongitude),
         }
     })
     return newData;
