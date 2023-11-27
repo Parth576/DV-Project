@@ -15,6 +15,7 @@ const leftItems = ["Template Ntwrk", "Candidate 1", "Candidate 2", "Candidate 3"
 let currentLeftIndex = 0;
 function updateLeftDisplayText() {
     document.getElementById("lDisplayText").textContent = leftItems[currentLeftIndex];
+    document.getElementById("mapText").textContent = leftItems[currentLeftIndex];
 }
 function lLeftBtn() {
     currentLeftIndex = (currentLeftIndex - 1 + leftItems.length) % leftItems.length;
