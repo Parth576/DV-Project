@@ -78,7 +78,7 @@ function drawPie(graph_data, svg_name) {
         .on("mouseout", handleMouseOut);
 
     function handleClick(event, d) {
-        console.log("Clicked on slice with data:", d.data);
+        //console.log("Clicked on slice with data:", d.data);
         const eType = d.data[0];
         appState.applyFilters({
             'eType': eType,

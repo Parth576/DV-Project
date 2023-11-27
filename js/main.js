@@ -173,18 +173,6 @@ const appState = (function() {
                     };
                 }
             });
-            // if (filterParams.hasOwnProperty('startTime')) {
-            //     prevLeftData = [...prevLeftData.filter((d)=>d.startTime===filterParams.startTime)];
-            //     prevRightData = [...prevRightData.filter((d)=>d.startTime===filterParams.startTime)];
-            // }
-            // if (filterParams.hasOwnProperty('endTime')) {
-            //     prevLeftData = [...prevLeftData.filter((d)=>d.endTime===filterParams.endTime)];
-            //     prevRightData = [...prevRightData.filter((d)=>d.endTime===filterParams.endTime)];
-            // }
-            // if (filterParams.hasOwnProperty('eType')) {
-            //     prevLeftData = [...prevLeftData.filter((d)=>d.eType===filterParams.eType)];
-            //     prevRightData = [...prevRightData.filter((d)=>d.eType===filterParams.eType)];
-            // }
 
             filteredData = {
                 ...filteredData,
@@ -197,7 +185,7 @@ const appState = (function() {
             leftNodes: getNodes(filteredData.leftGraph),
             rightNodes:  getNodes(filteredData.rightGraph),
         }
-        console.log(filteredData);
+        
         drawNetworkChart();
         drawBarChart();
         drawHeatmap();
