@@ -33,7 +33,7 @@ function lRightBtn() {
 }
 
 
-const rightItems = [ "Template Ntwrk", "Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4", "Candidate 5"];
+const rightItems = ["Candidate 1", "Candidate 2", "Candidate 3", "Candidate 4", "Candidate 5",  "Template Ntwrk"];
 let currentRightIndex = 0;
 function updateRightDisplayText() {
     document.getElementById("rDisplayText").textContent = rightItems[currentRightIndex];
@@ -52,6 +52,8 @@ function rRightBtn() {
     updateRightDisplayText();
     console.log("Right Right button clicked");
 }
+updateLeftDisplayText();
+updateRightDisplayText();
 
 const leftSwitch = document.getElementById('switchLeft');
 const rightSwitch = document.getElementById('switchRight');
