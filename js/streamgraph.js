@@ -58,16 +58,19 @@ function getWeekData(dayData, weeks) {
 //   drawSingleStreamgraph('Right', dataStore[filters.rightGraph])
 // }
 
-function drawLeftStreamgraph() { 
-   const dataStore = appState.getDataStore();
-    const data = dataStore.leftGraph;
+function drawStreamgraph() {
+  const dataStore = appState.getDataStore();
+  drawEachStreamgraph(dataStore.leftGraph, "#streamgraphLeft")
+  drawEachStreamgraph(dataStore.rightGraph, "#streamgraphRight")
+}
 
+function drawEachStreamgraph(data, svg_name) { 
     const keys = d3.union(data.map(d => d.eType));
 
     const weeks = d3.union(data.map(d=>getISOWeekNumber(d.time)));
     const weekData = getWeekData(data, Array.from(weeks).slice().sort((a, b) => a - b));
 
-    const svg = d3.select("#streamgraphLeft")
+    const svg = d3.select(svg_name)
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -255,4 +258,4 @@ function drawLeftStreamgraph() {
         endLine.call(endLineDrag);
 }
 
-export default drawLeftStreamgraph;
+export default drawStreamgraph;
