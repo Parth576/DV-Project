@@ -81,7 +81,7 @@ function drawPie(graph_data, svg_name) {
         .attr("class", "pie")
         .attr("d", arc)
         .attr("fill", (d, i) =>{
-            console.log(d)
+            // console.log(d)
             return color[d.index]} )
         .style("opacity", 0.7)
         .attr("stroke", "black")
