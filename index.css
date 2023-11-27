@@ -45,3 +45,13 @@ div.tooltip {
     border-color: black;
     pointer-events: none;
 }
+
+.slider-line {
+    stroke: blue;
+    stroke-width: 4;
+    cursor: grab;
+  }
+
+  .slider-line.dragging {
+    cursor: grabbing;
+  }
