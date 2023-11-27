@@ -135,7 +135,7 @@ const appState = (function() {
                 leftGraph: dataStore.template,
                 leftDemographics: dataStore['template-demographics'],
                 rightGraph: dataStore.candidate1,
-                rightDemographics: dataStore['candidate5-demographics'],
+                rightDemographics: dataStore['candidate1-demographics'],
             };
         } else  {
             const newFilters = {
@@ -164,13 +164,28 @@ const appState = (function() {
             // apply filters based on current 'filters' object and set filtered data
             ['startTime', 'endTime', 'eType'].forEach((filterType) => {
                 if(filterParams.hasOwnProperty(filterType)) {
-                    filteredLeftData = [...filteredLeftData.filter((d)=>d[filterType]===filterParams[filterType])];
-                    filteredRightData = [...filteredRightData.filter((d)=>d[filterType]===filterParams[filterType])];
+                    if (filterType === 'eType') {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
+                    } else if (filterType === 'startTime') {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time>=filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.time>=filterParams[filterType])];
+                    } else {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time<=filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.time<=filterParams[filterType])];
+                    }
+                    
                 } else {
-                    if (filters[filterType] !== null) {
-                        filteredLeftData = [...filteredLeftData.filter((d)=>d[filterType]===filters[filterType])];
-                        filteredRightData = [...filteredRightData.filter((d)=>d[filterType]===filters[filterType])];
-                    };
+                    if (filterType === 'eType') {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
+                    } else if (filterType === 'startTime') {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time>=filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.time>=filterParams[filterType])];
+                    } else {
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time<=filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.time<=filterParams[filterType])];
+                    }
                 }
             });
 
