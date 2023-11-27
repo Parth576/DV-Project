@@ -58,6 +58,8 @@ const rightSwitch = document.getElementById('switchRight');
 // Get the card elements
 const leftStream = document.getElementById('leftStream');
 const rightStream = document.getElementById('rightStream');
+const leftHeat = document.getElementById('leftHeatmap');
+const rightHeat = document.getElementById('rightHeatmap');
 
 leftSwitch.addEventListener('change', updateCardVisibility);
 rightSwitch.addEventListener('change', updateCardVisibility);
@@ -65,16 +67,20 @@ rightSwitch.addEventListener('change', updateCardVisibility);
 function updateCardVisibility() {
     // Display Stream card if left switch is checked, otherwise hide it
     if (leftSwitch.checked) {
-        leftStream.innerHTML = 'Heat Map';
+        leftStream.style.display = 'none';
+        leftHeat.style.display = 'block';
     } else {
-        leftStream.innerHTML = 'Stream Graph';
+        leftStream.style.display = 'block';
+        leftHeat.style.display = 'none';
     }
 
     // Display Heat card if right switch is checked, otherwise hide it
     if (rightSwitch.checked) {
-      rightStream.innerHTML = "Heat Map"
+        rightStream.style.display = 'none';
+        rightHeat.style.display = 'block';
     } else {
-      rightStream.innerHTML = "Stream Graph"
+        rightStream.style.display = 'block';
+        rightHeat.style.display = 'none';
     }
   }
 
