@@ -62,7 +62,7 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name) {
     const tooltip = d3.select(div_name)
         .append("div")
         .style("opacity", 0)
-        .attr("class", "tooltip")
+        .attr("class", "heatmap-tooltip")
         .style("background-color", "white")
         .style("border", "solid")
         .style("border-width", "2px")
