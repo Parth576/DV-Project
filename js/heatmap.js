@@ -1,7 +1,17 @@
 import appState from "./main.js";
 import {getISOWeekNumber} from "./utils.js";
 
-const widthWithMargin = 600, heightWithMargin = 200, margin = {top: 10, right: 30, bottom: 30, left: 60},
+function vh(percent) {
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    return (percent * h) / 100;
+}
+  
+function vw(percent) {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    return (percent * w) / 100;
+}
+
+const widthWithMargin = vw(30), heightWithMargin = vh(25), margin = {top: vh(2), right: vw(2), bottom: vh(2), left: vw(2)},
     width = widthWithMargin - margin.left - margin.right,
     height = heightWithMargin - margin.top - margin.bottom;
 
@@ -103,7 +113,7 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data) {
         .attr("ry", 4)
         .style("stroke-width", 4)
         .style("stroke", "none")
-        .style("opacity", 0.8)
+        .style("opacity", 1)
         .on("mouseover", mouseover)
         .on("mousemove", mousemove)
         .on("mouseleave", mouseleave)
