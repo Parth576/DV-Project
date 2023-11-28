@@ -154,10 +154,17 @@ function drawBarChart() {
         .attr("x", x(minValue))
         .attr("y", d => y(d))
         .attr("height", d => y.bandwidth()-20)
+        .on("mouseover", function(event,d) {
+            showToolTip(event, d, "#demoTooltip",left_data);
+        })
+        .on("mouseout", function(d) {
+            hideToolTip("#demoTooltip");
+        })
         .transition()
         .duration(1000)
         .attr("width", d => x(left_data[d]))
-        .attr("fill", "#704F4F");
+        .attr("fill", "#704F4F")
+       ;
  
     svg.selectAll(".bar2")
     .data(demographicKeys)
@@ -166,10 +173,17 @@ function drawBarChart() {
         .attr("x", x(minValue))
         .attr("y", d => y(d)+20)
         .attr("height", d => y.bandwidth()-20)
+        .on("mouseover", function(event,d) {
+            showToolTip(event, d, "#demoTooltip",right_data);
+        })
+        .on("mouseout", function(d) {
+            hideToolTip("#demoTooltip");
+        })
         .transition()
         .duration(1000)
         .attr("width", d => x(right_data[d]))
         .attr("fill","#F1A661")
+       ;
     
     var keys = [legendLeft, legendRight]
     
@@ -183,6 +197,7 @@ function drawBarChart() {
         .attr("height", 10)
         .attr("rx", 5)
         .style("fill", function(d, i){ if (i == 0) {return "#704F4F";} else return "#F1A661"})
+        
 
     svg.selectAll(".labels")
     .data(keys)
@@ -193,7 +208,22 @@ function drawBarChart() {
         .style("fill", function(d, i){ if (i == 0) {return "#704F4F";} else return "#F1A661"})
         .text(function(d, i){ return d})
         .attr("text-anchor", "left")
-        .style("alignment-baseline", "middle")
+        .style("alignment-baseline", "middle");
+
+}
+
+function showToolTip(event, d, tooltipID,data){
+    console.log(d)
+    const tooltip = d3.select(tooltipID);
+    tooltip.style("opacity", 1)
+                    .html(`${d} : ${data[d].toFixed(1)}`);
+
+
+
+}
+function hideToolTip(tooltipID){
+    const tooltip = d3.select(tooltipID);
+    tooltip.style("opacity", 0);
 
 }
 
