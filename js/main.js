@@ -239,15 +239,26 @@ const appState = (function() {
             leftNodes: getNodes(filteredData.leftGraph),
             rightNodes:  getNodes(filteredData.rightGraph),
         }
-        
-        drawNetworkChart();
-        drawBarChart();
-        drawMapChart();
-        drawHeatmap();
-        if (calling_chart !== "pie") {
+        if (calling_chart == "network") {
+            drawBarChart();
+        } 
+        else if (calling_chart == "none") {
+            drawBarChart();
+            drawNetworkChart();
+            drawMapChart();
+            drawHeatmap();
             drawPieChart();
+            drawStreamgraph();
         }
-        drawStreamgraph();
+        else {
+            drawNetworkChart();
+            drawMapChart();
+            drawHeatmap();
+            if (calling_chart !== "pie") {
+                drawPieChart();
+            }
+            drawStreamgraph();
+        }
     }
 
     return {

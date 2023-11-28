@@ -20,8 +20,8 @@ function drawNetworkChart() {
         link_color = color(etype);
     }
     
-    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics, link_color,"#netLeftTooltip");
-    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics, link_color,"#netRightTooltip");
+    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics, link_color,"#netLeftTooltip", "leftNode");
+    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics, link_color,"#netRightTooltip", "rightNode");
  
 }
 function vh(percent) {
@@ -34,7 +34,7 @@ function vw(percent) {
     return (percent * w) / 100;
 }
 
-function drawNetwork(network_nodes, network_links, svg_name, demographicData, link_color, tooltipID) {
+function drawNetwork(network_nodes, network_links, svg_name, demographicData, link_color, tooltipID, node_name) {
     const width = 928;
     const height = 600;
     const margin = 10;
@@ -175,6 +175,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
                 
             })
             .attr("fill", d => "#272829")
+            .on("click", handleClick)
             .on("mouseover", function(event,d) {
                 displayDonut(d, svg_name, getDemographics(d));
                 showToolTip(event, d, svg_name, getDemographics(d), tooltipID);
@@ -182,6 +183,15 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
             .on("mouseout", function(d) {d3.selectAll(".donut").remove();
             hideToolTip(tooltipID);
         });
+
+            function handleClick(event, d) {
+                if (getDemographics(d)==null) {
+                    return;
+                }
+                appState.applyFilters({
+                    [node_name]: d.id,
+                }, "network");
+            }
 
             function getDemographics(d) {
                 return demographicData.find(obj => obj.person == d.id) || null
