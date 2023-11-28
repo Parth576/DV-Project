@@ -20,7 +20,7 @@ function drawBarChart() {
     var legendRight = "";
     let left_data, right_data;
     if (left_node == null) {
-        legendLeft = "Aggregate of the left nodes";
+        legendLeft = "Left graph aggregated data";
         left_data = leftDemographics.reduce((acc, obj) => {
             for (const key in obj) {
               if (acc.hasOwnProperty(key) && key !='person') {
@@ -39,10 +39,11 @@ function drawBarChart() {
         }
     }
     else {
+        legendLeft = "Person "+left_node + " from left graph";
         left_data = leftDemographics.find(obj => parseInt(obj.person) === left_node);
     }
     if (right_node == null) {
-        legendRight = "Aggregate of the right nodes";
+        legendRight = "Right graph aggregated data";
         right_data = rightDemographics.reduce((acc, obj) => {
             for (const key in obj) {
               if (acc.hasOwnProperty(key) && key !='person') {
@@ -61,6 +62,7 @@ function drawBarChart() {
         }
     }
     else {
+        legendRight = "Person "+right_node + " from right graph";
         right_data = rightDemographics.find(obj => parseInt(obj.person) === right_node);
     }
 
@@ -171,10 +173,10 @@ function drawBarChart() {
     
     var keys = [legendLeft, legendRight]
     
-    svg.selectAll("dots")
+    svg.selectAll(".dots")
     .data(keys)
-    .enter()
-    .append("rect")
+    .join("rect")
+    .attr("class","dots")
         .attr("x", 0.6*width)
         .attr("y", function(d,i){ return 20 + i*(25)})
         .attr("width", 10)
@@ -182,10 +184,10 @@ function drawBarChart() {
         .attr("rx", 5)
         .style("fill", function(d, i){ if (i == 0) {return "#704F4F";} else return "#F1A661"})
 
-    svg.selectAll("labels")
+    svg.selectAll(".labels")
     .data(keys)
-    .enter()
-    .append("text")
+    .join("text")
+        .attr("class", "labels")
         .attr("x", 0.6*width + 20*1.2)
         .attr("y", function(d,i){ return 24 + i*(25) + 5})
         .style("fill", function(d, i){ if (i == 0) {return "#704F4F";} else return "#F1A661"})
