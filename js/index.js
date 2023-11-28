@@ -19,14 +19,14 @@ function updateLeftDisplayText() {
 function lLeftBtn() {
     currentLeftIndex = (currentLeftIndex - 1 + leftItems.length) % leftItems.length;
     console.log(nwkMapping[leftItems[currentLeftIndex]])
-    appState.applyFilters({ 'leftGraph': nwkMapping[leftItems[currentLeftIndex]] })
+    appState.applyFilters({ 'leftGraph': nwkMapping[leftItems[currentLeftIndex]] , "leftNode":null, "rightNode": null })
     updateLeftDisplayText();
     console.log("Left Left button clicked");
 }
 function lRightBtn() {
     currentLeftIndex = (currentLeftIndex + 1) % leftItems.length;
     console.log(nwkMapping[leftItems[currentLeftIndex]])
-    appState.applyFilters({ 'leftGraph': nwkMapping[leftItems[currentLeftIndex]] })
+    appState.applyFilters({ 'leftGraph': nwkMapping[leftItems[currentLeftIndex]] , "leftNode":null, "rightNode": null })
     updateLeftDisplayText();
     console.log("Left Right button clicked");
 }
@@ -40,14 +40,14 @@ function updateRightDisplayText() {
 function rLeftBtn() {
     currentRightIndex = (currentRightIndex - 1 + rightItems.length) % rightItems.length;
     console.log(nwkMapping[rightItems[currentRightIndex]])
-    appState.applyFilters({ 'rightGraph': nwkMapping[rightItems[currentRightIndex]] })
+    appState.applyFilters({ 'rightGraph': nwkMapping[rightItems[currentRightIndex]], "leftNode":null, "rightNode": null })
     updateRightDisplayText();
     console.log("Right Left button clicked");
 }
 function rRightBtn() {
     currentRightIndex = (currentRightIndex + 1) % rightItems.length;
     console.log(nwkMapping[rightItems[currentRightIndex]])
-    appState.applyFilters({ 'rightGraph': nwkMapping[rightItems[currentRightIndex]] })
+    appState.applyFilters({ 'rightGraph': nwkMapping[rightItems[currentRightIndex]] , "leftNode":null, "rightNode": null })
     updateRightDisplayText();
     console.log("Right Right button clicked");
 }
