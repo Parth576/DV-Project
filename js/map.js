@@ -11,17 +11,19 @@ function vw(percent) {
 }
 
 function drawMapChart() {
+    d3.select("#myMap svg").selectAll("*").remove();
+
 
     const dataStore = appState.getDataStore();
-    // console.log(dataStore)
+  
 
     var filtersOnMain=appState.getFilters();
-    console.log(filtersOnMain);
+   
 
 
     if(filtersOnMain.leftGraph==="template" || filtersOnMain.rightGraph==="template"){
         console.log("template found", filtersOnMain.leftGraph, filtersOnMain.rightGraph)
-        console.log(dataStore)
+      
 
         if(filtersOnMain.leftGraph === "template"){
             var tempColor="#704F4F";
@@ -34,7 +36,7 @@ function drawMapChart() {
             var pointsGraph=dataStore.leftGraph
            
         }
-       console.log(pointsGraph)
+      
         
 
 
@@ -53,8 +55,8 @@ function drawMapChart() {
 
     }
     else{
-        var pointsLeftData=dataStore.leftGraph;
-        var pointsRightData = dataStore.rightGraph;
+        var pointsLeftData=dataStore.leftGraph.filter(data => data.eType === 3);
+        var pointsRightData = dataStore.rightGraph.filter(data => data.eType === 3);
         drawMapNormalChart(pointsLeftData,pointsRightData);
 
     }
@@ -78,10 +80,10 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
 
        
         const countryIntMap = {
-            0: 'USA',
+            3: 'USA',
             1: 'Italy',
             2: 'Brazil',
-            3: 'Cuba',
+            0: 'Cuba',
             4: 'China',
             5: 'Canada',
         };
@@ -92,6 +94,7 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
         .range([0.3, 1]);
 
     const tooltip = d3.select("#mapTooltip");
+    const tooltip2 = d3.select("#mapTooltipPoint");
 
     // Load external data and boot
     d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then( function(worldData) {
@@ -122,6 +125,8 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
                     .html(`${country}: ${countryData.count}`)
                     .style('left', vw(event.pageX))
                     .style('top', vh(event.pageY)); // Adjust the positioning
+
+                    
             }
         })
         .on("mouseout", function () {
@@ -137,15 +142,26 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
         .attr("cx", d => projection([d.targetLongitude, d.targetLatitude])[0]+250) // Use the projection to convert lat/long to x/y
         .attr("cy", d => projection([d.targetLongitude, d.targetLatitude])[1])
         .attr("r", 5) // Adjust the radius as needed
-        .attr("fill", pointColor);
+        .attr("fill", pointColor)
+        .on("mouseover", function (event, d) {
+            // Show tooltip with details
+            tooltip2.style("opacity", 1)
+                .html(`Target: ${d.target}`)
+                .style("left", vw(event.pageX) + 10)
+                .style("top", vh(event.pageY) - 10);
+        })
+        .on("mouseout", function () {
+            // Hide tooltip on mouseout
+            tooltip2.style("opacity", 0);
+        });
     });
 }
 
 
 function drawMapNormalChart(data1,data2){
 
+   
     console.log(data1,data2)
-
     const svg = d3.select("#myMap svg");
     const width = vw(43.5);
     const height = vh(50);
@@ -156,6 +172,8 @@ function drawMapNormalChart(data1,data2){
    const projection = d3.geoNaturalEarth1()
    .scale(width / 1.45 / Math.PI)
    .translate([width / 2, height / 2]);
+
+   const tooltip2 = d3.select("#mapTooltipPoint");
 
    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then( function(worldData) {
 
@@ -174,10 +192,22 @@ function drawMapNormalChart(data1,data2){
     .attr("class","circle1")
     .enter()
     .append("circle")
-    .attr("cx", d => projection([d.targetLongitude, d.targetLatitude])[0]+250)
+    .attr("cx", d => { 
+        return projection([d.targetLongitude, d.targetLatitude])[0]+250})
     .attr("cy", d => projection([d.targetLongitude, d.targetLatitude])[1])
     .attr("r", 5) // Set your desired radius
-    .attr("fill", "#704F4F");
+    .attr("fill", "#704F4F")
+    .on("mouseover", function (event, d) {
+        // Show tooltip with details
+        tooltip2.style("opacity", 1)
+            .html(`Target: ${d.target}`)
+            .style("left", vw(event.pageX) + 10)
+            .style("top", vh(event.pageY) - 10);
+    })
+    .on("mouseout", function () {
+        // Hide tooltip on mouseout
+        tooltip2.style("opacity", 0);
+    });
 
     // Draw circles for data2
     svg.append("g")
@@ -186,10 +216,21 @@ function drawMapNormalChart(data1,data2){
     .data(data2)
     .enter()
     .append("circle")
-    .attr("cx", d => projection([d.targetLongitude, d.targetLatitude])[0]+240)
+    .attr("cx", d =>  { return projection([d.targetLongitude, d.targetLatitude])[0]+240})
     .attr("cy", d => projection([d.targetLongitude, d.targetLatitude])[1])
     .attr("r", 5) // Set your desired radius
-    .attr("fill", "#F1A661");
+    .attr("fill", "#F1A661")
+    .on("mouseover", function (event, d) {
+        // Show tooltip with details
+        tooltip2.style("opacity", 1)
+            .html(`Target: ${d.target}`)
+            .style("left", vw(event.pageX) + 10)
+            .style("top", vh(event.pageY) - 10);
+    })
+    .on("mouseout", function () {
+        // Hide tooltip on mouseout
+        tooltip2.style("opacity", 0);
+    });
         
         
         
