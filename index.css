@@ -46,12 +46,12 @@ div.pie-tooltip {
     pointer-events: none;
 }
 
-.slider-line {
+.startLine .endLine {
     stroke: blue;
     stroke-width: 4;
     cursor: grab;
   }
 
-  .slider-line.dragging {
+  .startLine.dragging .endLine.dragging {
     cursor: grabbing;
   }
