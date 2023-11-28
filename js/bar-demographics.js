@@ -16,8 +16,11 @@ function drawBarChart() {
     const right_node = dataStore.rightSelectedNode;
     const leftDemographics = dataStore.leftDemographics;
     const rightDemographics = dataStore.rightDemographics;
+    var legendLeft = "";
+    var legendRight = "";
     let left_data, right_data;
     if (left_node == null) {
+        legendLeft = "Aggregate of the left nodes";
         left_data = leftDemographics.reduce((acc, obj) => {
             for (const key in obj) {
               if (acc.hasOwnProperty(key) && key !='person') {
@@ -39,6 +42,7 @@ function drawBarChart() {
         left_data = leftDemographics.find(obj => obj.person === left_node);
     }
     if (right_node == null) {
+        legendRight = "Aggregate of the right nodes";
         right_data = rightDemographics.reduce((acc, obj) => {
             for (const key in obj) {
               if (acc.hasOwnProperty(key) && key !='person') {
@@ -139,6 +143,30 @@ function drawBarChart() {
         .attr("width", d => x(right_data[d]))
         .attr("height", d => y.bandwidth()-20)
         .attr("fill","#F1A661")
+    
+    var keys = [legendLeft, legendRight]
+    
+    svg.selectAll("dots")
+    .data(keys)
+    .enter()
+    .append("rect")
+        .attr("x", 400)
+        .attr("y", function(d,i){ return 20 + i*(25)})
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("rx", 5)
+        .style("fill", function(d, i){ if (i == 0) {return "#704F4F";} else return "#F1A661"})
+
+    svg.selectAll("labels")
+    .data(keys)
+    .enter()
+    .append("text")
+        .attr("x", 400 + 20*1.2)
+        .attr("y", function(d,i){ return 20 + i*(25) + 5})
+        .style("fill", function(d, i){ if (i == 0) {return "#704F4F";} else return "#F1A661"})
+        .text(function(d, i){ return d})
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
 
 }
 
