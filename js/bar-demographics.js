@@ -92,8 +92,7 @@ function drawBarChart() {
     var demographicKeys = Object.keys(left_data).filter(key => key !== 'person');
     const svg = d3.select("#demographics-svg")
         .attr("width", width)
-        .attr("height", height)
-    .append("g");
+        .attr("height", height);
     
     const x = d3.scaleLinear()
     .range([ wlmargin, width-wrmargin ])
@@ -129,9 +128,11 @@ function drawBarChart() {
     .join("rect")
         .attr("class","bar1")
         .attr("x", x(minValue))
-        .attr("y", d => y(d)-10+10)
-        .attr("width", d => x(left_data[d]))
+        .attr("y", d => y(d))
         .attr("height", d => y.bandwidth()-20)
+        .transition()
+        .duration(1000)
+        .attr("width", d => x(left_data[d]))
         .attr("fill", "#704F4F");
  
     svg.selectAll(".bar2")
@@ -139,9 +140,11 @@ function drawBarChart() {
     .join("rect")
         .attr("class","bar2")
         .attr("x", x(minValue))
-        .attr("y", d => y(d)+10+10)
-        .attr("width", d => x(right_data[d]))
+        .attr("y", d => y(d)+20)
         .attr("height", d => y.bandwidth()-20)
+        .transition()
+        .duration(1000)
+        .attr("width", d => x(right_data[d]))
         .attr("fill","#F1A661")
     
     var keys = [legendLeft, legendRight]
