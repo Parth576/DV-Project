@@ -188,6 +188,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
                 if (getDemographics(d)==null) {
                     return;
                 }
+                showToolTip(event, d, svg_name, getDemographics(d), tooltipID, true);
                 appState.applyFilters({
                     [node_name]: d.id,
                 }, "network");
@@ -237,11 +238,17 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
 
 }
 
-function showToolTip(event, d, svg_name, demoData,tooltipID){
+function showToolTip(event, d, svg_name, demoData,tooltipID, click = false) {
     console.log(d,tooltipID)
+    console.log(click)
     const tooltip = d3.select(tooltipID);
-    tooltip.style("opacity", 1)
+    if (!click) {
+        tooltip.style("opacity", 1)
                     .html(`Node: ${d.id}`);
+    } else {
+        tooltip.style("opacity", 1)
+                    .html(`Node: ${d.id} clicked!`);
+    }
 
 
 }
