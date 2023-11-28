@@ -16,6 +16,7 @@ const widthWithMargin = vw(30), heightWithMargin = vh(25), margin = {top: vh(2),
     height = heightWithMargin - margin.top - margin.bottom;
 
 function drawGraph(filteredData, div_name) {
+    d3.select(`${div_name}`).selectAll("*").remove();
     const svg = d3.select(div_name)
         .append("svg")
         .attr("width", widthWithMargin)
