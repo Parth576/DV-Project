@@ -42,7 +42,9 @@ function drawPie(graph_data, svg_name) {
     const radius = Math.min(width, height) / 2.5;
     const innerRadius = 0;
 
-    const color = ["#1b9e77","#d95f02","#7570b3","#e7298a"]
+    const color = d3.scaleOrdinal()
+    .domain([0,1,2,3])
+    .range(d3.schemeDark2);
 
     let svg;
     let div;
@@ -82,7 +84,7 @@ function drawPie(graph_data, svg_name) {
         .attr("d", arc)
         .attr("fill", (d, i) =>{
             // console.log(d)
-            return color[d.index]} )
+            return color(d.data[0])} )
         .style("opacity", 0.7)
         .attr("stroke", "black")
         .style("stroke-width", "2px")
