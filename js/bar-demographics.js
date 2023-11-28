@@ -97,12 +97,23 @@ function drawBarChart() {
     const x = d3.scaleLinear()
     .range([ wlmargin, width-wrmargin ])
     .domain([minValue, 1.1*maxValue])
-    svg.append("g")
-    .attr("transform", `translate(0, ${height-hbmargin})`)
-    .call(d3.axisBottom(x))
-    .selectAll("text")
+
+    if (svg.select(".barXAxis").empty() ){
+        svg.append("g")
+        .attr('class','barXAxis')
+        .attr("transform", `translate(0, ${height-hbmargin})`)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
         .attr("transform", "translate(-10,0)rotate(-15)")
         .style("text-anchor", "end");
+    } else {
+        svg.select(".barXAxis").transition()
+        .duration(1000)
+        .call(d3.axisBottom(x))
+        .selectAll("text")
+        .attr("transform", "translate(-10,0)rotate(-15)")
+        .style("text-anchor", "end");
+    }
 
     svg.append("text")
         .attr("id", "x-label")
@@ -115,13 +126,24 @@ function drawBarChart() {
     .domain(demographicKeys)
     .range([ height-hbmargin, htmargin])
     .padding(0.2);
-    svg.append("g")
-    .attr("transform", `translate(${wlmargin}, 0)`)
-    .call(d3.axisLeft(y))
-    .selectAll("text")
+
+    if (svg.select(".barYAxis").empty() ){
+        svg.append("g")
+        .attr('class','barYAxis')
+        .attr("transform", `translate(${wlmargin}, 0)`)
+        .call(d3.axisLeft(y))
+        .selectAll("text")
         .attr("transform", "translate(-10,0)rotate(-30)")
         .style("text-anchor", "end");
-
+    }
+    else {
+        svg.select(".barYAxis").transition()
+        .duration(1000)
+        .call(d3.axisLeft(y))
+        .selectAll("text")
+        .attr("transform", "translate(-10,0)rotate(-30)")
+        .style("text-anchor", "end");
+    }
 
     svg.selectAll(".bar1")
     .data(demographicKeys)
