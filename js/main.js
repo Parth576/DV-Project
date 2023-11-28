@@ -239,11 +239,6 @@ const appState = (function() {
             leftNodes: getNodes(filteredData.leftGraph),
             rightNodes:  getNodes(filteredData.rightGraph),
         }
-
-        console.log(filters);
-        console.log(filterParams);
-        console.log(filteredData);
-        console.log()
         
         drawNetworkChart();
         drawBarChart();
@@ -252,9 +247,7 @@ const appState = (function() {
         if (calling_chart !== "pie") {
             drawPieChart();
         }
-        // if (calling_chart !== 'streamgraph') {
-            drawStreamgraph();
-        // }
+        drawStreamgraph();
     }
 
     return {
