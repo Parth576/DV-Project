@@ -36,6 +36,8 @@ function drawGraph(filteredData, div_name, link_color) {
 }
 
 function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name, link_color) {
+    d3.select("#myMap svg").selectAll("*").remove();
+
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -122,6 +124,10 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name, link_color) {
         .on("mouseleave", mouseleave)
         .on("click", (e, d) => {
             console.log(e, d)
+            appState.applyFilters({
+                'startTime': d.date.setHours(0, 0, 0, 0),
+                'endTime': d.date.setHours(23, 59, 59, 999),
+            }, "heatmap");
         })
 }
 
