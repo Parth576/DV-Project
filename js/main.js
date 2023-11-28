@@ -166,7 +166,7 @@ const appState = (function() {
 
             // apply filters based on current 'filters' object and set filtered data
             ['startTime', 'endTime', 'eType'].forEach((filterType) => {
-                if(filterParams.hasOwnProperty(filterType)) {
+                if(filterParams.hasOwnProperty(filterType) && filterParams[filterType] !== null) {
                     if (filterType === 'eType') {
                         filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
                         filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
