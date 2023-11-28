@@ -139,7 +139,7 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
         .data(leftData)
         .enter()
         .append("circle")
-        .attr("cx", d => projection([d.targetLongitude, d.targetLatitude])[0]+250) // Use the projection to convert lat/long to x/y
+        .attr("cx", d => projection([d.targetLongitude, d.targetLatitude])[0]+vw(18)) // Use the projection to convert lat/long to x/y
         .attr("cy", d => projection([d.targetLongitude, d.targetLatitude])[1])
         .attr("r", 5) // Adjust the radius as needed
         .attr("fill", pointColor)
@@ -193,7 +193,7 @@ function drawMapNormalChart(data1,data2){
     .enter()
     .append("circle")
     .attr("cx", d => { 
-        return projection([d.targetLongitude, d.targetLatitude])[0]+250})
+        return projection([d.targetLongitude, d.targetLatitude])[0]+vw(18)})
     .attr("cy", d => projection([d.targetLongitude, d.targetLatitude])[1])
     .attr("r", 5) // Set your desired radius
     .attr("fill", "#704F4F")
@@ -216,7 +216,7 @@ function drawMapNormalChart(data1,data2){
     .data(data2)
     .enter()
     .append("circle")
-    .attr("cx", d =>  { return projection([d.targetLongitude, d.targetLatitude])[0]+240})
+    .attr("cx", d =>  { return projection([d.targetLongitude, d.targetLatitude])[0]+vw(17.5)})
     .attr("cy", d => projection([d.targetLongitude, d.targetLatitude])[1])
     .attr("r", 5) // Set your desired radius
     .attr("fill", "#F1A661")
