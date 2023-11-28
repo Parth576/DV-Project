@@ -59,26 +59,55 @@ function getWeekData(dayData, weeks) {
 // }
 
 function drawStreamgraph() {
-  const dataStore = appState.getDataStore();
-  drawEachStreamgraph(dataStore.leftGraph, "#streamgraphLeft")
-  drawEachStreamgraph(dataStore.rightGraph, "#streamgraphRight")
+  const originalData = appState.getOriginalData();
+  const filters = appState.getFilters();
+  drawEachStreamgraph(originalData[filters.leftGraph], "#streamgraphLeft", filters.eType)
+  drawEachStreamgraph(originalData[filters.rightGraph], "#streamgraphRight", filters.eType)
 }
 
-function drawEachStreamgraph(data, svg_name) { 
+function drawEachStreamgraph(data, svg_name, selectedEdgeType) { 
     const keys = d3.union(data.map(d => d.eType));
 
     const weeks = d3.union(data.map(d=>getISOWeekNumber(d.time)));
-    const weekData = getWeekData(data, Array.from(weeks).slice().sort((a, b) => a - b));
-
-    const svg = d3.select(svg_name)
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",`translate(${margin.left}, ${margin.top})`);
-
     
+    const weekData = getWeekData(data, Array.from(weeks).slice().sort((a, b) => a - b));
+    let svg = d3.select(`${svg_name} g`);
 
-      
+
+    if (svg.empty()) {
+
+      svg = d3.select(svg_name).attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append('g')
+      .attr("transform",`translate(${margin.left}, ${margin.top})`)
+
+      svg.append("g")
+        .attr("transform", `translate(0, ${height})`)
+        .attr('class','streamXAxis')
+
+      svg.append('g')
+        .attr('class','streamYAxis')
+
+          svg.append("text")
+        .attr("class", "y-label")
+        .attr("text-anchor", "end")
+        .attr("x", -20)
+        .attr("y", -25)
+        .attr("transform", "rotate(-90)")
+        .text("Number of contacts");
+
+        svg.append("line")
+        .attr("class", "startLine")
+        
+
+      svg.append("line")
+        .attr("class", "endLine")
+        
+
+      svg.append("rect")
+        .attr("class", "selectRect")
+        
+    } 
 
       const x = d3.scaleLinear()
         .domain(d3.extent(weekData, function(d) { return d.weekNum; }))
@@ -89,36 +118,22 @@ function drawEachStreamgraph(data, svg_name) {
           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
       ];
       const xAxis = d3.scaleBand().range([0, width]).domain(months);
-      svg.append("g")
-        .attr("transform", `translate(0, ${height})`)
+
+      // svg.append("g")
+      //   .attr("transform", `translate(0, ${height})`)
+      //   .call(d3.axisBottom(xAxis))
+
+      svg.selectAll('.streamXAxis')
         .call(d3.axisBottom(xAxis))
         
       svg.selectAll(".tick line").attr("stroke", "#b8b8b8")
-
-      // svg.append("text")
-      //    .attr("text-anchor", "end")
-      //    .attr("x", width)
-      //    .attr("y", height-30 )
-      //    .text("Week number");
 
       const y = d3.scaleLinear()
         .domain([0, d3.max(weekData, d => d[0] + d[1] + d[2] + d[3])])
         .range([ height, 0 ]);
         
-      svg.append('g')
+      svg.selectAll('.streamYAxis')
         .call(d3.axisLeft(y))
-
-      svg.append("text")
-        .attr("class", "y-label")
-        .attr("text-anchor", "end")
-        .attr("x", -20)
-        .attr("y", -25)
-        .attr("transform", "rotate(-90)")
-        // .attr("transform", `translate(-10, 0)`)
-        // .attr("x", height / 3)
-        // .attr("y", 0)
-        // .attr("dy", ".75em")
-        .text("Number of contacts");
 
       const color = d3.scaleOrdinal()
         .domain(d3.union(data.map(d => d.eType)))
@@ -128,30 +143,6 @@ function drawEachStreamgraph(data, svg_name) {
       .order(d3.stackOrderAppearance)
        .keys(keys)
        (weekData)
-
-
-      const Tooltip = svg
-        .append("text")
-        .attr("x", 0)
-        .attr("y", 0)
-        .style("opacity", 0)
-        .style("font-size", 17)
-
-      const mouseover = function(event,d) {
-        Tooltip.style("opacity", 1)
-        d3.selectAll(".myArea").style("opacity", .2)
-        d3.select(this)
-          .style("stroke", "black")
-          .style("opacity", 1)
-      }
-      const mousemove = function(event,d,i) {
-        let grp = d.key
-        Tooltip.text(grp)
-      }
-      const mouseleave = function(event,d) {
-        Tooltip.style("opacity", 0)
-        d3.selectAll(".myArea").style("opacity", 1).style("stroke", "none")
-       }
 
       // Area generator
       const area = d3.area()
@@ -164,16 +155,28 @@ function drawEachStreamgraph(data, svg_name) {
 
       // Show the areas
       svg
-        .selectAll(".myLayers")
+        .selectAll(".myArea")
         .data(stackedData)
         .join("path")
           .attr("class", "myArea")
           .style("fill", function(d) { return color(d.key); })
+          .style('opacity', function(d) {
+            if(selectedEdgeType === null) return 1;
+
+            if(selectedEdgeType === d.key) return 1;
+            else return 0.2
+          })
+          .style('stroke', function(d) {
+            if(selectedEdgeType === null) return 'none';
+
+            if(selectedEdgeType === d.key) return 'black';
+            else return 'none'
+          })
           .attr("d", area)
           // .attr("transform",`translate(${margin.left}, ${margin.top})`)
-          .on("mouseover", mouseover)
-          .on("mousemove", mousemove)
-          .on("mouseleave", mouseleave)
+          //.on("mouseover", mouseover)
+          //.on("mousemove", mousemove)
+          //.on("mouseleave", mouseleave)
 
 
       // START TIME FILTERS
@@ -181,22 +184,22 @@ function drawEachStreamgraph(data, svg_name) {
           let startLineX = 0; 
         let endLineX = width;
 
-        const startLine = svg.append("line")
-          .attr("class", "slider-line")
+        const startLine = svg.selectAll(".startLine")
+          // .attr("class", "slider-line")
           .attr("x1", startLineX) 
           .attr("y1", 0)
           .attr("x2", startLineX)
           .attr("y2", height);
 
-        const endLine = svg.append("line")
-          .attr("class", "slider-line")
+        const endLine = svg.selectAll(".endLine")
+          // .attr("class", "slider-line")
           .attr("x1", endLineX)  
           .attr("y1", 0)
           .attr("x2", endLineX)
           .attr("y2", height);
 
-        const select_rect = svg.append("rect")
-          .attr("class", "select-rect")
+        const select_rect = svg.selectAll(".selectRect")
+          // .attr("class", "select-rect")
           .attr("x", startLineX)
           .attr("y", 0)
           .attr("width", width)
