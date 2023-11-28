@@ -125,7 +125,7 @@ const appState = (function() {
     }
 
     // fn to apply filters and update all the graphs based on that, call getDataStore() to get updated data object
-    function applyFilters(filterParams) {
+    function applyFilters(filterParams, calling_chart="none") {
         let filteredLeftData;
         let filteredRightData;
         
@@ -207,7 +207,9 @@ const appState = (function() {
         drawNetworkChart();
         drawBarChart();
         drawHeatmap();
-        drawPieChart();
+        if (calling_chart != "pie") {
+            drawPieChart();
+        }
         drawLeftStreamgraph();
     }
 
