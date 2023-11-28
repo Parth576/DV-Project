@@ -18,6 +18,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
     const width = 928;
     const height = 600;
     const margin = 10;
+    d3.select(svg_name).selectChildren().remove();
 
   
    
@@ -123,10 +124,10 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
 
 
         // Add a line for each link, and a circle for each node.
-        const link = svg.append("g")
+        const link = svg
             .attr("stroke", "#999")
             .attr("stroke-opacity", 0.6)
-            .selectAll()
+            .selectAll(".link")
             .data(unique_links)
             .join("line")
             .attr("class", "link")
@@ -138,7 +139,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
         const node = svg
             .attr("stroke", "#fff")
             .attr("stroke-width", 1.5)
-            .selectAll()
+            .selectAll(".node-group")
             .data(nodes)
             .join("g")
             .attr("class", "node-group")
@@ -232,9 +233,7 @@ function displayDonut(node, svg_name, demographics) {
     const radius = 20;
 
     // append the svg object to the div called 'my_dataviz'
-    const svg = d3.select(svg_name)
-    .append("g")
-        .attr("transform", `translate(${node.x},${node.y})`);
+    const svg = d3.select(svg_name);
 
     // set the color scale
     const color = d3.scaleOrdinal()
@@ -260,6 +259,7 @@ function displayDonut(node, svg_name, demographics) {
         .innerRadius(nodeSizeScale(node.size))         // This is the size of the donut hole
         .outerRadius(nodeSizeScale(node.size)+radius)
     )
+    .attr("transform", `translate(${node.x},${node.y})`);
 }
 
 export default drawNetworkChart;
