@@ -103,14 +103,6 @@ function drawEachStreamgraph(data, svg_name, filters) {
         .attr("transform", "rotate(-90)")
         .text("Number of contacts");
 
-        svg.append("line")
-        .attr("class", "startLine")
-        
-
-      svg.append("line")
-        .attr("class", "endLine")
-        
-
       svg.append("rect")
         .attr("class", "selectRect")
         
@@ -190,19 +182,34 @@ function drawEachStreamgraph(data, svg_name, filters) {
 
         //   let startLineX = 0; 
         // let endLineX = width;
+        let startLine;
+        if (svg.select(".startLine").empty()) {
+          startLine = svg.append("line")
+            .attr("class", "startLine")
+        }
+        else {
+          startLine = svg.select(".startLine")
+        }
+
+        let endLine;
+        if (svg.select(".endLine").empty()) {
+          endLine = svg.append("line")
+            .attr("class", "endLine")
+        }
+        else {
+          endLine = svg.select(".endLine")
+        }
 
         let startLineX = x(getISOWeekNumber(startTime));
         let endLineX = x(getISOWeekNumber(endTime));
 
-        const startLine = svg.selectAll(".startLine")
-          // .attr("class", "slider-line")
+        startLine
           .attr("x1", startLineX) 
           .attr("y1", 0)
           .attr("x2", startLineX)
           .attr("y2", height);
 
-        const endLine = svg.selectAll(".endLine")
-          // .attr("class", "slider-line")
+        endLine
           .attr("x1", endLineX)  
           .attr("y1", 0)
           .attr("x2", endLineX)
@@ -212,7 +219,7 @@ function drawEachStreamgraph(data, svg_name, filters) {
           // .attr("class", "select-rect")
           .attr("x", startLineX)
           .attr("y", 0)
-          .attr("width", width)
+          .attr("width", endLineX - startLineX)
           .attr("height", height)
           .attr("opacity", 0.2)
 
