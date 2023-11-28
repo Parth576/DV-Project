@@ -122,9 +122,7 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
             if (countryData) {
                 // Show tooltip with count
                 tooltip.style("opacity", 1)
-                    .html(`${country}: ${countryData.count}`)
-                    .style('left', vw(event.pageX))
-                    .style('top', vh(event.pageY)); // Adjust the positioning
+                    .html(`${country}: ${countryData.count}`); // Adjust the positioning
 
                     
             }

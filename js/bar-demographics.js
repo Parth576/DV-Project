@@ -93,7 +93,7 @@ function drawBarChart() {
     
     const x = d3.scaleLinear()
     .range([ wlmargin, width-wrmargin ])
-    .domain([minValue, 1.1*maxValue])
+    .domain([minValue, 1*maxValue])
     svg.append("g")
     .attr("transform", `translate(0, ${height-hbmargin})`)
     .call(d3.axisBottom(x))
@@ -119,7 +119,7 @@ function drawBarChart() {
         .attr("transform", "translate(-10,0)rotate(-30)")
         .style("text-anchor", "end");
 
-
+    
     svg.selectAll(".bar1")
     .data(demographicKeys)
     .join("rect")
@@ -128,7 +128,13 @@ function drawBarChart() {
         .attr("y", d => y(d)-10+10)
         .attr("width", d => x(left_data[d]))
         .attr("height", d => y.bandwidth()-20)
-        .attr("fill", "#704F4F");
+        .attr("fill", "#704F4F")
+        .on("mouseover", function(event,d) {
+            showToolTip(event, d, "#demoTooltip",left_data);
+        })
+        .on("mouseout", function(d) {
+            hideToolTip("#demoTooltip");
+        });
  
     svg.selectAll(".bar2")
     .data(demographicKeys)
@@ -139,6 +145,27 @@ function drawBarChart() {
         .attr("width", d => x(right_data[d]))
         .attr("height", d => y.bandwidth()-20)
         .attr("fill","#F1A661")
+        .on("mouseover", function(event,d) {
+            showToolTip(event, d, "#demoTooltip",right_data);
+        })
+        .on("mouseout", function(d) {
+            hideToolTip("#demoTooltip");
+        });
+
+}
+
+function showToolTip(event, d, tooltipID,data){
+    console.log(d)
+    const tooltip = d3.select(tooltipID);
+    tooltip.style("opacity", 1)
+                    .html(`${d} : ${data[d]}`);
+
+
+
+}
+function hideToolTip(tooltipID){
+    const tooltip = d3.select(tooltipID);
+    tooltip.style("opacity", 0);
 
 }
 
