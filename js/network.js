@@ -7,14 +7,25 @@ var nodeSizeScale = d3
 
 function drawNetworkChart() {
     
+    const color = d3.scaleOrdinal()
+    .domain([0,1,2,3])
+    .range(d3.schemeDark2);
+    const agg_color = "#3876BF";
     const dataStore = appState.getDataStore();
+    const etype = appState.getFilters().eType;
+    let link_color;
+    if (etype === null) {
+        link_color = agg_color;
+    } else {
+        link_color = color(etype);
+    }
     
-    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics);
-    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics);
+    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics, link_color);
+    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics, link_color);
  
 }
 
-function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
+function drawNetwork(network_nodes, network_links, svg_name, demographicData, link_color) {
     const width = 928;
     const height = 600;
     const margin = 10;
@@ -131,7 +142,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData) {
             .data(unique_links)
             .join("line")
             .attr("class", "link")
-        .style("stroke", "#3876BF")
+        .style("stroke", link_color)
         .attr("stroke-opacity", (d) => linkOpacityScale(d.thickness))
         .attr("stroke-width", (d) => linkSizeScale(d.thickness))
         .attr("marker-end", "url(#line-end)");
