@@ -22,7 +22,7 @@ function drawMapChart() {
 
 
     if(filtersOnMain.leftGraph==="template" || filtersOnMain.rightGraph==="template"){
-        console.log("template found", filtersOnMain.leftGraph, filtersOnMain.rightGraph)
+        // console.log("template found", filtersOnMain.leftGraph, filtersOnMain.rightGraph)
       
 
         if(filtersOnMain.leftGraph === "template"){
@@ -70,7 +70,7 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
 
     svg.attr("width", width)
    .attr("height", height);
-   console.log(data,leftData)
+//    console.log(data,leftData)
    
 
     // Map and projection
@@ -161,7 +161,7 @@ function drawMapNewChart(data,leftData,tempColor,pointColor){
 function drawMapNormalChart(data1,data2){
 
    
-    console.log(data1,data2)
+    // console.log(data1,data2)
     const svg = d3.select("#myMap svg");
     const width = vw(43.5);
     const height = vh(50);
