@@ -2,7 +2,7 @@ import drawBarChart from './bar-demographics.js';
 import drawNetworkChart from './network.js';
 import drawHeatmap from "./heatmap.js";
 import drawPieChart from './piechart.js';
-import drawLeftStreamgraph from './streamgraph.js'
+import drawStreamgraph from './streamgraph.js'
 import drawMapChart from './map.js';
 
 
@@ -117,6 +117,10 @@ const appState = (function() {
         return filters;
     }
 
+    function getMinMaxTimes(data) {
+        return d3.extent(data,d=>d.time);
+    }
+
     function getNodes(edgeList) {
         let uniqueNodes = new Set();
         edgeList.forEach((elem) => {
@@ -140,6 +144,13 @@ const appState = (function() {
                 rightGraph: dataStore.candidate1,
                 rightDemographics: dataStore['candidate1-demographics'],
             };
+            let totalData = [...dataStore.template, ...dataStore.candidate1];
+            let minMax = getMinMaxTimes(totalData);
+            filters = {
+                ...filters,
+                startTime: minMax[0],
+                endTime: minMax[1]
+            }
         } else  {
             const newFilters = {
                 ...filters,
@@ -152,6 +163,13 @@ const appState = (function() {
                     leftGraph: dataStore[filterParams['leftGraph']],
                     leftDemographics: dataStore[`${filterParams['leftGraph']}-demographics`]
                 };
+                let totalData = [...dataStore[filterParams['leftGraph']], ...dataStore[filters['rightGraph']]];
+                let minMax = getMinMaxTimes(totalData);
+                filters = {
+                    ...filters,
+                    startTime: minMax[0],
+                    endTime: minMax[1]
+                }
             }
             if (filterParams.hasOwnProperty('rightGraph')) {
                 filteredData = {
@@ -159,6 +177,13 @@ const appState = (function() {
                     rightGraph: dataStore[filterParams['rightGraph']],
                     rightDemographics: dataStore[`${filterParams['rightGraph']}-demographics`]
                 };
+                let totalData = [...dataStore[filterParams['rightGraph']], ...dataStore[filters['leftGraph']]];
+                let minMax = getMinMaxTimes(totalData);
+                filters = {
+                    ...filters,
+                    startTime: minMax[0],
+                    endTime: minMax[1]
+                }
             }
 
             filteredLeftData = [...dataStore[filters.leftGraph]];
@@ -210,10 +235,12 @@ const appState = (function() {
         drawBarChart();
         drawMapChart();
         drawHeatmap();
-        if (calling_chart != "pie") {
+        if (calling_chart !== "pie") {
             drawPieChart();
         }
-        drawLeftStreamgraph();
+        if (calling_chart !== 'streamgraph') {
+            drawStreamgraph();
+        }
     }
 
     return {
