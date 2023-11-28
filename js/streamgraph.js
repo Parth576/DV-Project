@@ -15,11 +15,20 @@ const width = vw(30) - margin.left - margin.right;
 const height = vh(25) - margin.top - margin.bottom;
 
 
-
 function getISOWeekNumber(date) {
   const startDate = new Date('2025-01-01T00:00:00');
   var days = Math.floor((date - startDate) / (24 * 60 * 60 * 1000));
   return Math.ceil(days / 7);
+}
+
+function getDateFromISOWeekNumber(weekNumber) {
+  const startDate = new Date('2025-01-01T00:00:00');
+  const daysToAdd = Math.floor(weekNumber * 7);
+  
+  const targetDate = new Date(startDate);
+  targetDate.setDate(startDate.getDate() + daysToAdd);
+
+  return targetDate;
 }
 
 function getWeekData(dayData, weeks) {
@@ -50,23 +59,21 @@ function getWeekData(dayData, weeks) {
     
 }
 
-// function drawStreamgraphs() {
-//   const dataStore = appState.getDataStore();
-//   const filters = appState.getFilters();
-
-//   drawSingleStreamgraph('Left', dataStore[filters.leftGraph]);
-//   drawSingleStreamgraph('Right', dataStore[filters.rightGraph])
-// }
-
 function drawStreamgraph() {
   const originalData = appState.getOriginalData();
   const filters = appState.getFilters();
-  drawEachStreamgraph(originalData[filters.leftGraph], "#streamgraphLeft", filters.eType)
-  drawEachStreamgraph(originalData[filters.rightGraph], "#streamgraphRight", filters.eType)
+  drawEachStreamgraph(originalData[filters.leftGraph], "#streamgraphLeft", filters)
+  drawEachStreamgraph(originalData[filters.rightGraph], "#streamgraphRight", filters)
 }
 
-function drawEachStreamgraph(data, svg_name, selectedEdgeType) { 
+function drawEachStreamgraph(data, svg_name, filters) { 
+
+  
     const keys = d3.union(data.map(d => d.eType));
+
+    const selectedEdgeType = filters.eType;
+    const startTime = filters.startTime;
+    const endTime = filters.endTime;
 
     const weeks = d3.union(data.map(d=>getISOWeekNumber(d.time)));
     
@@ -181,8 +188,11 @@ function drawEachStreamgraph(data, svg_name, selectedEdgeType) {
 
       // START TIME FILTERS
 
-          let startLineX = 0; 
-        let endLineX = width;
+        //   let startLineX = 0; 
+        // let endLineX = width;
+
+        let startLineX = x(getISOWeekNumber(startTime));
+        let endLineX = x(getISOWeekNumber(endTime));
 
         const startLine = svg.selectAll(".startLine")
           // .attr("class", "slider-line")
@@ -238,6 +248,11 @@ function drawEachStreamgraph(data, svg_name, selectedEdgeType) {
           .on("end", () => {
             startLineDragging = false;
             // Get x axis value for starting line => x.invert(startLineX)
+            let newStartX = x.invert(startLineX);
+            let newStartTime = getDateFromISOWeekNumber(newStartX);
+            appState.applyFilters({
+              'startTime': newStartTime
+            }, 'streamgraph');
           });
     
           const endLineDrag = d3.drag()
@@ -267,6 +282,11 @@ function drawEachStreamgraph(data, svg_name, selectedEdgeType) {
           .on("end", () => {
             endLineDragging = false;
             // Get x axis value for ending line => x.invert(endLineX)
+            let newEndX = x.invert(endLineX);
+            let newEndTime = getDateFromISOWeekNumber(newEndX);
+            appState.applyFilters({
+              'endTime': newEndTime
+            }, 'streamgraph');
           });
     
         startLine.call(startlineDrag);
