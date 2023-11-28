@@ -12,8 +12,8 @@ function vw(percent) {
 
 function drawBarChart() {
     const dataStore = appState.getDataStore();
-    const left_node = dataStore.leftSelectedNode;
-    const right_node = dataStore.rightSelectedNode;
+    const left_node = appState.getFilters().leftNode;
+    const right_node = appState.getFilters().rightNode;
     const leftDemographics = dataStore.leftDemographics;
     const rightDemographics = dataStore.rightDemographics;
     var legendLeft = "";
@@ -39,7 +39,7 @@ function drawBarChart() {
         }
     }
     else {
-        left_data = leftDemographics.find(obj => obj.person === left_node);
+        left_data = leftDemographics.find(obj => parseInt(obj.person) === left_node);
     }
     if (right_node == null) {
         legendRight = "Aggregate of the right nodes";
@@ -61,7 +61,7 @@ function drawBarChart() {
         }
     }
     else {
-        right_data = rightDemographics.find(obj => obj.person === right_node);
+        right_data = rightDemographics.find(obj => parseInt(obj.person) === right_node);
     }
 
     const width = vw(43.5);
