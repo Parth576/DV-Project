@@ -246,14 +246,18 @@ const appState = (function() {
             drawBarChart();
             drawNetworkChart();
             drawMapChart();
-            drawHeatmap();
+            if (calling_chart !== 'heatmap') {
+                drawHeatmap();
+            }
             drawPieChart();
             drawStreamgraph();
         }
         else {
             drawNetworkChart();
             drawMapChart();
-            drawHeatmap();
+            if (calling_chart !== 'heatmap') {
+                drawHeatmap();
+            }
             if (calling_chart !== "pie") {
                 drawPieChart();
             }
