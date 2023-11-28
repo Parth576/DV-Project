@@ -117,8 +117,15 @@ const appState = (function() {
         return filters;
     }
 
-    function getMinMaxTimes(data) {
-        return d3.extent(data,d=>d.time);
+    function getMinMaxTimes(leftData, rightData) {
+        // return d3.extent(data,d=>d.time);
+        let left = d3.extent(leftData, d=>d.time);
+        let right = d3.extent(rightData, d=>d.time);
+
+        let newStartTime = left[0] > right[0] ? left[0] : right[0];
+        let newEndTime = left[1] < right[1] ? left[1] : right[1];
+
+        return [newStartTime, newEndTime];
     }
 
     function getNodes(edgeList) {
@@ -134,6 +141,8 @@ const appState = (function() {
     function applyFilters(filterParams, calling_chart="none") {
         let filteredLeftData;
         let filteredRightData;
+
+        
         
         if(!filterParams) {
             // default state
@@ -144,8 +153,8 @@ const appState = (function() {
                 rightGraph: dataStore.candidate1,
                 rightDemographics: dataStore['candidate1-demographics'],
             };
-            let totalData = [...dataStore.template, ...dataStore.candidate1];
-            let minMax = getMinMaxTimes(totalData);
+            //let totalData = [...dataStore.template, ...dataStore.candidate1];
+            let minMax = getMinMaxTimes(dataStore.template, dataStore.candidate1);
             filters = {
                 ...filters,
                 startTime: minMax[0],
@@ -163,8 +172,8 @@ const appState = (function() {
                     leftGraph: dataStore[filterParams['leftGraph']],
                     leftDemographics: dataStore[`${filterParams['leftGraph']}-demographics`]
                 };
-                let totalData = [...dataStore[filterParams['leftGraph']], ...dataStore[filters['rightGraph']]];
-                let minMax = getMinMaxTimes(totalData);
+                //let totalData = [...dataStore[filterParams['leftGraph']], ...dataStore[filters['rightGraph']]];
+                let minMax = getMinMaxTimes(dataStore[filterParams['leftGraph']], dataStore[filters['rightGraph']]);
                 filters = {
                     ...filters,
                     startTime: minMax[0],
@@ -177,8 +186,8 @@ const appState = (function() {
                     rightGraph: dataStore[filterParams['rightGraph']],
                     rightDemographics: dataStore[`${filterParams['rightGraph']}-demographics`]
                 };
-                let totalData = [...dataStore[filterParams['rightGraph']], ...dataStore[filters['leftGraph']]];
-                let minMax = getMinMaxTimes(totalData);
+                //let totalData = [...dataStore[filterParams['rightGraph']], ...dataStore[filters['leftGraph']]];
+                let minMax = getMinMaxTimes(dataStore[filterParams['rightGraph']], dataStore[filters['leftGraph']]);
                 filters = {
                     ...filters,
                     startTime: minMax[0],
@@ -196,24 +205,24 @@ const appState = (function() {
                         filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
                         filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
                     } else if (filterType === 'startTime') {
-                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time>=filterParams[filterType])];
-                        filteredRightData = [...filteredRightData.filter((d)=>d.time>=filterParams[filterType])];
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time>filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.time>filterParams[filterType])];
                     } else {
-                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time<=filterParams[filterType])];
-                        filteredRightData = [...filteredRightData.filter((d)=>d.time<=filterParams[filterType])];
+                        filteredLeftData = [...filteredLeftData.filter((d)=>d.time<filterParams[filterType])];
+                        filteredRightData = [...filteredRightData.filter((d)=>d.time<filterParams[filterType])];
                     }
                     
                 } else {
                     if (filters[filterType] !== null) {
                         if (filterType === 'eType') {
-                            filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filterParams[filterType])];
-                            filteredRightData = [...filteredRightData.filter((d)=>d.eType===filterParams[filterType])];
+                            filteredLeftData = [...filteredLeftData.filter((d)=>d.eType===filters[filterType])];
+                            filteredRightData = [...filteredRightData.filter((d)=>d.eType===filters[filterType])];
                         } else if (filterType === 'startTime') {
-                            filteredLeftData = [...filteredLeftData.filter((d)=>d.time>=filterParams[filterType])];
-                            filteredRightData = [...filteredRightData.filter((d)=>d.time>=filterParams[filterType])];
+                            filteredLeftData = [...filteredLeftData.filter((d)=>d.time>filters[filterType])];
+                            filteredRightData = [...filteredRightData.filter((d)=>d.time>filters[filterType])];
                         } else {
-                            filteredLeftData = [...filteredLeftData.filter((d)=>d.time<=filterParams[filterType])];
-                            filteredRightData = [...filteredRightData.filter((d)=>d.time<=filterParams[filterType])];
+                            filteredLeftData = [...filteredLeftData.filter((d)=>d.time<filters[filterType])];
+                            filteredRightData = [...filteredRightData.filter((d)=>d.time<filters[filterType])];
                         }
                     }
                 }
@@ -230,6 +239,11 @@ const appState = (function() {
             leftNodes: getNodes(filteredData.leftGraph),
             rightNodes:  getNodes(filteredData.rightGraph),
         }
+
+        console.log(filters);
+        console.log(filterParams);
+        console.log(filteredData);
+        console.log()
         
         drawNetworkChart();
         drawBarChart();
@@ -238,9 +252,9 @@ const appState = (function() {
         if (calling_chart !== "pie") {
             drawPieChart();
         }
-        if (calling_chart !== 'streamgraph') {
+        // if (calling_chart !== 'streamgraph') {
             drawStreamgraph();
-        }
+        // }
     }
 
     return {
