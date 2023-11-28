@@ -15,7 +15,7 @@ const widthWithMargin = vw(30), heightWithMargin = vh(25), margin = {top: vh(2),
     width = widthWithMargin - margin.left - margin.right,
     height = heightWithMargin - margin.top - margin.bottom;
 
-function drawGraph(filteredData, div_name) {
+function drawGraph(filteredData, div_name, link_color) {
     d3.select(`${div_name}`).selectAll("*").remove();
     const svg = d3.select(div_name)
         .append("svg")
@@ -30,10 +30,12 @@ function drawGraph(filteredData, div_name) {
     const myVars = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     const heatmapData = computeHeatmapData(filteredData, myVars);
-    drawHeatmapInSvg(svg, myGroups, myVars, heatmapData, div_name);
+
+    
+    drawHeatmapInSvg(svg, myGroups, myVars, heatmapData, div_name, link_color);
 }
 
-function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name) {
+function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name, link_color) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -56,8 +58,11 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name) {
     svg.append("g")
         .call(d3.axisLeft(y));
 
+        
+
     const myColor = d3.scaleLinear()
-        .range(["#b8d3f2", "#01428f"])
+        // .range(["#b8d3f2", "#01428f"])
+        .range([link_color[0],link_color[1]])
         .domain([1, d3.max(data, (d) => d.value)])
 
     const tooltip = d3.select(div_name)
@@ -136,8 +141,26 @@ function computeHeatmapData(data, myVars) {
 
 function drawHeatmap() {
     const dataStore = appState.getDataStore();
-    drawGraph(dataStore.rightGraph, "#rightHeatmap");
-    drawGraph(dataStore.leftGraph, "#leftHeatmap");
+
+    const color = d3.scaleOrdinal()
+    .domain([0,1,2,3])
+    .range(d3.schemeDark2);
+
+    const lightColor = d3.scaleOrdinal()
+    .domain([0,1,2,3])
+    .range(["#d8f6e9", "#ffb699", "#e7e6f0", "#ffc8e1"])
+    const agg_color = "#3876BF";
+    const etype = appState.getFilters().eType;
+    let link_color;
+    if (etype === null) {
+        link_color =  ["#c9e1f3", agg_color]
+    } else {
+        // link_color = color(etype);
+        link_color = [lightColor(etype), color(etype)]
+    }
+
+    drawGraph(dataStore.rightGraph, "#rightHeatmap", link_color);
+    drawGraph(dataStore.leftGraph, "#leftHeatmap", link_color);
 }
 
 export default drawHeatmap;
