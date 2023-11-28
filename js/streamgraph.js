@@ -143,7 +143,7 @@ function drawEachStreamgraph(data, svg_name, filters) {
         .call(d3.axisLeft(y))
 
       const color = d3.scaleOrdinal()
-        .domain(d3.union(data.map(d => d.eType)))
+        .domain([0,1,2,3])
         .range(d3.schemeDark2);
 
       const stackedData = d3.stack()
