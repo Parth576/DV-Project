@@ -23,7 +23,9 @@ function drawPieChart() {
 function drawPie(graph_data, svg_name) {
 
     var node_dict = { 0: 'Email', 1: 'Phone', 2: 'Buy/Sell', 3: 'Travel' };
-
+    let is_clicked = false;
+    let clicked_etype;
+    let clicked_sel;
 
     const eTypeCount = graph_data.reduce((countMap, item) => {
         const eType = item.eType;
@@ -42,14 +44,26 @@ function drawPie(graph_data, svg_name) {
 
     const color = ['crimson', '#F98C40', '#FAD65A', '#0037A7', '#100064']
 
-    const svg = d3.select(svg_name)
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("viewBox", `0 0 ${width} ${height}`)
-        .attr("preserveAspectRatio", "xMidYMid meet")
-        .append("g")
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+    let svg;
+    let div;
+    if (d3.select(`${svg_name} svg`).empty()) {
+        svg = d3.select(svg_name)
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("viewBox", `0 0 ${width} ${height}`)
+            .attr("preserveAspectRatio", "xMidYMid meet")
+            .append("g")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        
+        div = d3.select("body").append("div")
+                .attr("class", "pie-tooltip")
+                .style("opacity", 0);
+    }
+    else {
+        svg = d3.select(`${svg_name} svg`)
+        div = d3.select(".pie-tooltip").style("opacity", 0);
+    }
 
 
     const pie = d3.pie()
@@ -61,16 +75,13 @@ function drawPie(graph_data, svg_name) {
 
     const arcs = pie(groupedData);
 
-    var div = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
-    svg.selectAll("path")
+    svg.selectAll(".pie")
         .data(arcs)
-        .enter()
-        .append("path")
+        .join("path")
+        .attr("class", "pie")
         .attr("d", arc)
         .attr("fill", (d, i) => color[i])
+        .style("opacity", 0.7)
         .attr("stroke", "black")
         .style("stroke-width", "2px")
         .on("click", handleClick)
@@ -79,10 +90,38 @@ function drawPie(graph_data, svg_name) {
 
     function handleClick(event, d) {
         //console.log("Clicked on slice with data:", d.data);
-        const eType = d.data[0];
-        appState.applyFilters({
-            'eType': eType,
-        })
+        let strokew;
+        if (is_clicked) {
+            if (d3.select(this).style("opacity") == 1) {
+                is_clicked = false;
+                strokew = "2px";
+                d3.select(this).attr("stroke", "black").style("stroke-width", strokew).style("opacity", 0.7);
+                appState.applyFilters({
+                    'eType': null,
+                }, "pie");
+            } else {
+                strokew = "2px";
+                clicked_sel.attr("stroke", "black").style("stroke-width", strokew).style("opacity", 0.7);
+                strokew = "5px";
+                clicked_etype = d.data[0];
+                clicked_sel = d3.select(this);
+                d3.select(this).attr("stroke", "black").style("stroke-width", strokew).style("opacity", 1);
+                const eType = d.data[0];
+                appState.applyFilters({
+                    'eType': eType,
+                }, "pie");
+            }
+        } else {
+            strokew = "5px";
+            is_clicked = true;
+            clicked_etype = d.data[0];
+            clicked_sel = d3.select(this);
+            d3.select(this).attr("stroke", "black").style("stroke-width", strokew).style("opacity", 1);
+            const eType = d.data[0];
+            appState.applyFilters({
+                'eType': eType,
+            }, "pie");
+        }
     }
 
 
@@ -109,7 +148,11 @@ function drawPie(graph_data, svg_name) {
     }
 
     function handleMouseOut(event, d) {
-        d3.select(this).attr("stroke", 'black').style("stroke-width", "2px");
+        let strokew = "2px";
+        if (is_clicked && d.data[0] === clicked_etype) {
+            strokew = "4px";
+        }
+        d3.select(this).attr("stroke", 'black').style("stroke-width", strokew);
         d3.select(this)
             .transition()
             .duration(200)

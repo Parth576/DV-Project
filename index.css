@@ -30,7 +30,7 @@
     background-image: url('img/right-arrow.png');
 }
 
-div.tooltip {
+div.pie-tooltip {
     position: absolute;
     text-align: center;
     width: 125px;
