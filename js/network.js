@@ -20,12 +20,21 @@ function drawNetworkChart() {
         link_color = color(etype);
     }
     
-    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics, link_color);
-    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics, link_color);
+    drawNetwork(dataStore.leftNodes, dataStore.leftGraph, "#myNet svg", dataStore.leftDemographics, link_color,"#netLeftTooltip");
+    drawNetwork(dataStore.rightNodes, dataStore.rightGraph, "#myNet2 svg", dataStore.rightDemographics, link_color,"#netRightTooltip");
  
 }
+function vh(percent) {
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+    return (percent * h) / 100;
+}
+  
+function vw(percent) {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    return (percent * w) / 100;
+}
 
-function drawNetwork(network_nodes, network_links, svg_name, demographicData, link_color) {
+function drawNetwork(network_nodes, network_links, svg_name, demographicData, link_color, tooltipID) {
     const width = 928;
     const height = 600;
     const margin = 10;
@@ -166,8 +175,13 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
                 
             })
             .attr("fill", d => "#272829")
-            .on("mouseover", function(event,d) {displayDonut(d, svg_name, getDemographics(d));})
-            .on("mouseout", function(d) {d3.selectAll(".donut").remove();});
+            .on("mouseover", function(event,d) {
+                displayDonut(d, svg_name, getDemographics(d));
+                showToolTip(event, d, svg_name, getDemographics(d), tooltipID);
+            })
+            .on("mouseout", function(d) {d3.selectAll(".donut").remove();
+            hideToolTip(tooltipID);
+        });
 
             function getDemographics(d) {
                 return demographicData.find(obj => obj.person == d.id) || null
@@ -210,6 +224,20 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
 
 
 
+
+}
+
+function showToolTip(event, d, svg_name, demoData,tooltipID){
+    console.log(d,tooltipID)
+    const tooltip = d3.select(tooltipID);
+    tooltip.style("opacity", 1)
+                    .html(`Node: ${d.id}`);
+
+
+}
+function hideToolTip(tooltipID){
+    const tooltip = d3.select(tooltipID);
+    tooltip.style("opacity", 0);
 
 }
 
