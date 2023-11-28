@@ -25,7 +25,7 @@ function drawGraph(filteredData, div_name) {
             "translate(" + margin.left + "," + margin.top + ")");
 
 
-    const myGroups = Array.from(new Set(filteredData.map(d => getISOWeekNumber(d['time']))))
+    const myGroups = Array.from(new Set(filteredData.map(d => getISOWeekNumber(d['time'])))).sort((a, b) => a - b)
     const myVars = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
     const heatmapData = computeHeatmapData(filteredData, myVars);
