@@ -68,11 +68,11 @@ const appState = (function() {
         'candidate3-map': '../data/processed/candidate1-map.csv',
         'candidate4-map': '../data/processed/candidate1-map.csv',
         'candidate5-map': '../data/processed/candidate1-map.csv',
-        'candidate1-demographics': '../data/processed/demographics-candidate1.csv',
-        'candidate2-demographics': '../data/processed/demographics-candidate2.csv',
-        'candidate3-demographics': '../data/processed/demographics-candidate3.csv',
-        'candidate4-demographics': '../data/processed/demographics-candidate4.csv',
-        'candidate5-demographics': '../data/processed/demographics-candidate5.csv',
+        'candidate1-demographics': '../data/processed/demographics-candidate.csv',
+        'candidate2-demographics': '../data/processed/demographics-candidate.csv',
+        'candidate3-demographics': '../data/processed/demographics-candidate.csv',
+        'candidate4-demographics': '../data/processed/demographics-candidate.csv',
+        'candidate5-demographics': '../data/processed/demographics-candidate.csv',
     };
 
     document.addEventListener('DOMContentLoaded', function () {
