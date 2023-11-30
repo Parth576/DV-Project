@@ -177,6 +177,7 @@ function drawNetwork(network_nodes, network_links, svg_name, demographicData, li
             .attr("fill", d => "#272829")
             .on("click", handleClick)
             .on("mouseover", function(event,d) {
+                console.log(getDemographics(d));
                 displayDonut(d, svg_name, getDemographics(d));
                 showToolTip(event, d, svg_name, getDemographics(d), tooltipID);
             })
@@ -276,16 +277,21 @@ function displayDonut(node, svg_name, demographics) {
       };
 
     for (const expense in demographics) {
+        if (expense == "person") {
+            continue;
+        }
         if (["Household", "Living", "Healthcare", "Education"].includes(expense)) {
             data["Essential"] += parseFloat(demographics[expense]);
         } else if (["Personal", "Leisure", "Substances", "Donations"].includes(expense)) {
             data["Leisure"] += parseFloat(demographics[expense]);
         } else if (["Income"].includes(expense)) {
             data["Income"] += parseFloat(demographics[expense]);
-        } else {
+        }
+         else {
             data["Other"] += parseFloat(demographics[expense]);
         }
       }
+    console.log(data);
     const radius = 20;
 
     // append the svg object to the div called 'my_dataviz'
