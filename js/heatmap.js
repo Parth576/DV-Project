@@ -15,7 +15,7 @@ const widthWithMargin = vw(30), heightWithMargin = vh(25), margin = {top: vh(2),
     width = widthWithMargin - margin.left - margin.right,
     height = heightWithMargin - margin.top - margin.bottom;
 
-function drawGraph(filteredData, div_name, link_color) {
+function drawGraph(filteredData, div_name, link_color, tooltip_class) {
     // d3.select(`${div_name}`).selectAll("*").remove();
     let svg;
     if (d3.select(`${div_name} svg g.heat-g`).empty()) {
@@ -40,10 +40,10 @@ function drawGraph(filteredData, div_name, link_color) {
     const heatmapData = computeHeatmapData(filteredData, myVars);
 
     
-    drawHeatmapInSvg(svg, myGroups, myVars, heatmapData, div_name, link_color);
+    drawHeatmapInSvg(svg, myGroups, myVars, heatmapData, div_name, link_color, tooltip_class);
 }
 
-function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name, link_color) {
+function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name, link_color, tooltip_class) {
 
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
@@ -91,20 +91,20 @@ function drawHeatmapInSvg(svg, myGroups, myVars, data, div_name, link_color) {
         .domain([1, d3.max(data, (d) => d.value)])
 
     let tooltip;
-    if (d3.select(".heatmap-tooltip").empty()) {
+    if (d3.select(`.${tooltip_class}`).empty()) {
         tooltip = d3.select(div_name)
         .append("div")
         .style("opacity", 0)
-        .attr("class", "heatmap-tooltip")
+        .attr("class", `${tooltip_class}`)
         .style("background-color", "white")
         .style("border", "solid")
         .style("border-width", "2px")
         .style("border-radius", "5px")
         .style("padding", "5px")
     } else {
-        tooltip = d3.select(".heatmap-tooltip")
+        tooltip = d3.select(`.${tooltip_class}`)
         .style("opacity", 0)
-        .attr("class", "heatmap-tooltip")
+        .attr("class", `${tooltip_class}`)
         .style("background-color", "white")
         .style("border", "solid")
         .style("border-width", "2px")
@@ -202,8 +202,8 @@ function drawHeatmap() {
         link_color = [lightColor(etype), color(etype)]
     }
 
-    drawGraph(dataStore.rightGraph, "#rightHeatmap", link_color);
-    drawGraph(dataStore.leftGraph, "#leftHeatmap", link_color);
+    drawGraph(dataStore.rightGraph, "#rightHeatmap", link_color, "left-heatmap-tooltip");
+    drawGraph(dataStore.leftGraph, "#leftHeatmap", link_color, "right-heatmap-tooltip");
 }
 
 export default drawHeatmap;
